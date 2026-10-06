@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CA-Copilot | Clients</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* =========================================
+           CLIENT DETAILS POPUP
+        ========================================= */
+
+        .client-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.70);
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .client-modal-content {
+            width: 420px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: #0d1b2a;
+            border: 1px solid #263d57;
+            border-radius: 14px;
+            padding: 28px;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .client-modal-content h2 {
+            color: #ffffff;
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+
+        .modal-subtitle {
+            color: #66788d;
+            font-size: 12px;
+            margin-bottom: 25px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            background: transparent;
+            border: none;
+            color: #9aaabd;
+            font-size: 25px;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: #ffffff;
+        }
+
+        .modal-details {
+            display: grid;
+            gap: 15px;
+        }
+
+        .modal-details div {
+            background: #132942;
+            border-radius: 8px;
+            padding: 13px 15px;
+        }
+
+        .modal-details span {
+            display: block;
+            color: #66788d;
+            font-size: 10px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .modal-details strong {
+            color: #ffffff;
+            font-size: 13px;
+        }
+
+
+        /* =========================================
+           ADD CLIENT FORM
+        ========================================= */
+
+        .modal-form-group {
+            margin-bottom: 16px;
+        }
+
+        .modal-form-group label {
+            display: block;
+            color: #9aaabd;
+            font-size: 11px;
+            margin-bottom: 7px;
+        }
+
+        .modal-form-group input,
+        .modal-form-group select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 11px 12px;
+            background: #132942;
+            border: 1px solid #263d57;
+            border-radius: 7px;
+            color: #ffffff;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .modal-form-group input:focus,
+        .modal-form-group select:focus {
+            border-color: #4f7ea8;
+        }
+
+        .modal-form-group input::placeholder {
+            color: #66788d;
+        }
+
+        .add-client-submit {
+            width: 100%;
+            margin-top: 5px;
+        }
+
+
+        /* =========================================
+           CLIENT FILTER
+        ========================================= */
+
+        .filter-container {
+            position: relative;
+        }
+
+        .client-tools {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .client-search input {
+            width: 220px;
+            max-width: 100%;
+            box-sizing: border-box;
+            padding: 9px 12px;
+            background: #132942;
+            border: 1px solid #263d57;
+            border-radius: 7px;
+            color: #ffffff;
+            font-size: 12px;
+        }
+
+        .client-search input::placeholder {
+            color: #66788d;
+        }
+
+        .client-empty {
+            display: none;
+            padding: 24px 10px;
+            color: #66788d;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .client-tools,
+            .client-search,
+            .client-search input {
+                width: 100%;
+            }
+        }
+
+        .filter-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 42px;
+            width: 160px;
+            background: #0d1b2a;
+            border: 1px solid #263d57;
+            border-radius: 8px;
+            padding: 6px;
+            z-index: 1000;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+        }
+
+        .filter-menu button {
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            border: none;
+            border-radius: 5px;
+            color: #9aaabd;
+            text-align: left;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .filter-menu button:hover {
+            background: #132942;
+            color: #ffffff;
+        }
+
+    </style>
+</head>
+
+
+<body class="dashboard-page">
+
+
+    <!-- =========================================
+         SIDEBAR
+    ========================================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <span>CA</span>-Copilot
+        </div>
+
+        <div class="sidebar-menu">
+
+            <a href="dashboard.html">
+                <span>▦</span>
+                Dashboard
+            </a>
+
+            <a href="clients.html" class="active">
+                <span>👥</span>
+                Clients
+            </a>
+
+            <a href="documents.html">
+                <span>📄</span>
+                Documents
+            </a>
+
+            <a href="reconciliation.html">
+                <span>🔄</span>
+                Reconciliation
+            </a>
+
+            <a href="risk.html">
+                <span>⚠</span>
+                Risk & Anomalies
+            </a>
+
+            <a href="ask-client.html">
+                <span>💬</span>
+                Ask Client File
+            </a>
+
+            <a href="reports.html">
+                <span>📊</span>
+                Reports
+            </a>
+
+        </div>
+
+        <div class="sidebar-bottom">
+
+            <a href="settings.html">⚙ Settings</a>
+
+            <a href="index.html">
+                ← Back to Home
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================================
+         MAIN CONTENT
+    ========================================= -->
+
+    <main class="dashboard-main">
+
+
+        <!-- TOP BAR -->
+
+        <div class="dashboard-topbar">
+
+            <div>
+
+                <p class="section-label">
+                    CLIENT MANAGEMENT
+                </p>
+
+                <h1>
+                    Clients
+                </h1>
+
+                <p class="dashboard-subtitle">
+                    Manage client profiles and review their financial activity.
+                </p>
+
+            </div>
+
+
+            <button class="dashboard-btn" onclick="openAddClient()">
+                + Add Client
+            </button>
+
+        </div>
+
+
+
+        <!-- =========================================
+             CLIENT SUMMARY
+        ========================================= -->
+
+        <section class="dashboard-stats">
+
+
+            <div class="dashboard-stat">
+
+                <div class="stat-icon">
+                    👥
+                </div>
+
+                <p>
+                    Total Clients
+                </p>
+
+                <h2 id="totalClients">
+                    24
+                </h2>
+
+                <span>
+                    Active clients
+                </span>
+
+            </div>
+
+
+            <div class="dashboard-stat">
+
+                <div class="stat-icon">
+                    📄
+                </div>
+
+                <p>
+                    Documents
+                </p>
+
+                <h2>
+                    186
+                </h2>
+
+                <span>
+                    Processed
+                </span>
+
+            </div>
+
+
+            <div class="dashboard-stat warning-stat">
+
+                <div class="stat-icon">
+                    ⚠️
+                </div>
+
+                <p>
+                    Needs Review
+                </p>
+
+                <h2>
+                    12
+                </h2>
+
+                <span>
+                    Pending cases
+                </span>
+
+            </div>
+
+
+            <div class="dashboard-stat danger-stat">
+
+                <div class="stat-icon">
+                    🚨
+                </div>
+
+                <p>
+                    High Risk Clients
+                </p>
+
+                <h2 id="highRiskClientCount">
+                    5
+                </h2>
+
+                <span>
+                    Attention required
+                </span>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =========================================
+             CLIENT TABLE
+        ========================================= -->
+
+        <section class="dashboard-panel clients-panel">
+
+
+            <div class="panel-heading">
+
+                <div>
+
+                    <p class="section-label">
+                        CLIENT LIST
+                    </p>
+
+                    <h2>
+                        All Clients
+                    </h2>
+
+                </div>
+
+
+                <div class="client-tools">
+                    <div class="client-search">
+                        <input
+                            type="search"
+                            id="clientSearch"
+                            aria-label="Search clients"
+                            placeholder="Search by client or business type..."
+                            oninput="applyClientFilter()">
+                    </div>
+
+                <div class="filter-container">
+
+                    <button type="button" class="view-btn" onclick="toggleFilter()">
+                        Filter ▾
+                    </button>
+
+
+                    <div id="filterMenu" class="filter-menu">
+
+                        <button type="button" onclick="filterClients('all')">
+                            👥 All Clients
+                        </button>
+
+                        <button type="button" onclick="filterClients('high')">
+                            🔴 High Risk
+                        </button>
+
+                        <button type="button" onclick="filterClients('medium')">
+                            🟡 Medium Risk
+                        </button>
+
+                        <button type="button" onclick="filterClients('low')">
+                            🟢 Low Risk
+                        </button>
+
+                    </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="client-table">
+
+
+                <!-- TABLE HEADER -->
+
+                <div class="client-row client-header">
+
+                    <span>
+                        Client
+                    </span>
+
+                    <span>
+                        Business Type
+                    </span>
+
+                    <span>
+                        Documents
+                    </span>
+
+                    <span>
+                        Risk
+                    </span>
+
+                    <span>
+                        Last Review
+                    </span>
+
+                    <span>
+                        Action
+                    </span>
+
+                </div>
+
+
+
+                <!-- CLIENT 1 -->
+
+                <div class="client-row">
+
+                    <div class="client-name">
+
+                        <div class="client-avatar">
+                            AE
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                ABC Enterprises
+                            </h3>
+
+                            <p>
+                                Client ID: CL-001
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <span>
+                        Manufacturing
+                    </span>
+
+
+                    <span>
+                        32
+                    </span>
+
+
+                    <span class="client-risk high">
+                        High
+                    </span>
+
+
+                    <span>
+                        06 Oct 2026
+                    </span>
+
+
+                    <button
+                        class="client-action"
+                        onclick="showClient('ABC Enterprises', 'CL-001', 'Manufacturing', '32', 'High', '06 Oct 2026')">
+
+                        View
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- CLIENT 2 -->
+
+                <div class="client-row">
+
+                    <div class="client-name">
+
+                        <div class="client-avatar">
+                            ST
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Shree Traders
+                            </h3>
+
+                            <p>
+                                Client ID: CL-002
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <span>
+                        Wholesale
+                    </span>
+
+
+                    <span>
+                        27
+                    </span>
+
+
+                    <span class="client-risk medium">
+                        Medium
+                    </span>
+
+
+                    <span>
+                        05 Oct 2026
+                    </span>
+
+
+                    <button
+                        class="client-action"
+                        onclick="showClient('Shree Traders', 'CL-002', 'Wholesale', '27', 'Medium', '05 Oct 2026')">
+
+                        View
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- CLIENT 3 -->
+
+                <div class="client-row">
+
+                    <div class="client-name">
+
+                        <div class="client-avatar">
+                            PI
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Patil Industries
+                            </h3>
+
+                            <p>
+                                Client ID: CL-003
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <span>
+                        Engineering
+                    </span>
+
+
+                    <span>
+                        41
+                    </span>
+
+
+                    <span class="client-risk low">
+                        Low
+                    </span>
+
+
+                    <span>
+                        04 Oct 2026
+                    </span>
+
+
+                    <button
+                        class="client-action"
+                        onclick="showClient('Patil Industries', 'CL-003', 'Engineering', '41', 'Low', '04 Oct 2026')">
+
+                        View
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- CLIENT 4 -->
+
+                <div class="client-row">
+
+                    <div class="client-name">
+
+                        <div class="client-avatar">
+                            GS
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Global Services
+                            </h3>
+
+                            <p>
+                                Client ID: CL-004
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <span>
+                        IT Services
+                    </span>
+
+
+                    <span>
+                        19
+                    </span>
+
+
+                    <span class="client-risk low">
+                        Low
+                    </span>
+
+
+                    <span>
+                        02 Oct 2026
+                    </span>
+
+
+                    <button
+                        class="client-action"
+                        onclick="showClient('Global Services', 'CL-004', 'IT Services', '19', 'Low', '02 Oct 2026')">
+
+                        View
+
+                    </button>
+
+                </div>
+
+
+            </div>
+
+            <p id="clientEmpty" class="client-empty">No clients match your search and risk filter.</p>
+
+        </section>
+
+
+
+        <!-- FOOTER -->
+
+        <footer class="dashboard-footer">
+
+            <p>
+                © 2026 CA-Copilot | Intelligent Financial Review System
+            </p>
+
+        </footer>
+
+
+    </main>
+
+
+
+    <!-- =========================================
+         CLIENT DETAILS MODAL
+    ========================================= -->
+
+    <div id="clientModal" class="client-modal">
+
+
+        <div class="client-modal-content">
+
+
+            <button
+                class="modal-close"
+                type="button"
+                aria-label="Close client details"
+                onclick="closeClient()">
+
+                ×
+
+            </button>
+
+
+            <h2 id="modalClientName">
+                Client Name
+            </h2>
+
+
+            <p class="modal-subtitle">
+                Client Management Details
+            </p>
+
+
+            <div class="modal-details">
+
+
+                <div>
+
+                    <span>
+                        Client ID
+                    </span>
+
+                    <strong id="modalClientId">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Business Type
+                    </span>
+
+                    <strong id="modalBusinessType">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Documents
+                    </span>
+
+                    <strong id="modalDocuments">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Risk Level
+                    </span>
+
+                    <strong id="modalRisk">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Last Review
+                    </span>
+
+                    <strong id="modalReview">
+                        -
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================
+         ADD CLIENT MODAL
+    ========================================= -->
+
+    <div id="addClientModal" class="client-modal">
+
+
+        <div class="client-modal-content">
+
+
+            <button
+                class="modal-close"
+                type="button"
+                aria-label="Close add client dialog"
+                onclick="closeAddClient()">
+
+                ×
+
+            </button>
+
+
+            <h2>
+                Add New Client
+            </h2>
+
+
+            <p class="modal-subtitle">
+                Enter client information below.
+            </p>
+
+
+            <form id="addClientForm">
+
+
+                <div class="modal-form-group">
+
+                    <label for="newClientName">
+                        Client Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="newClientName"
+                        placeholder="Enter client name"
+                        required>
+
+                </div>
+
+
+                <div class="modal-form-group">
+
+                    <label for="newClientId">
+                        Client ID
+                    </label>
+
+                    <input
+                        type="text"
+                        id="newClientId"
+                        placeholder="Example: CL-005"
+                        readonly
+                        required>
+
+                </div>
+
+
+                <div class="modal-form-group">
+
+                    <label for="newBusinessType">
+                        Business Type
+                    </label>
+
+                    <input
+                        type="text"
+                        id="newBusinessType"
+                        placeholder="Example: IT Services"
+                        required>
+
+                </div>
+
+
+                <div class="modal-form-group">
+
+                    <label for="newRiskLevel">
+                        Risk Level
+                    </label>
+
+
+                    <select id="newRiskLevel">
+
+                        <option value="Low">
+                            Low
+                        </option>
+
+                        <option value="Medium">
+                            Medium
+                        </option>
+
+                        <option value="High">
+                            High
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="dashboard-btn add-client-submit">
+
+                    + Add Client
+
+                </button>
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================
+         JAVASCRIPT
+    ========================================= -->
+
+    <script>
+
+
+        /* =========================================
+           CLIENT DETAILS
+        ========================================= */
+
+        function showClient(
+            name,
+            id,
+            business,
+            documents,
+            risk,
+            review
+        ) {
+
+            document.getElementById("modalClientName").textContent = name;
+
+            document.getElementById("modalClientId").textContent = id;
+
+            document.getElementById("modalBusinessType").textContent = business;
+
+            document.getElementById("modalDocuments").textContent = documents;
+
+            document.getElementById("modalRisk").textContent = risk;
+
+            document.getElementById("modalReview").textContent = review;
+
+            document.getElementById("clientModal").style.display = "flex";
+
+        }
+
+
+
+        function closeClient() {
+
+            document.getElementById("clientModal").style.display = "none";
+
+        }
+
+
+
+        /* =========================================
+           ADD CLIENT
+        ========================================= */
+
+        function openAddClient() {
+
+            document.getElementById("newClientId").value = nextClientId();
+            document.getElementById("addClientModal").style.display = "flex";
+
+        }
+
+
+
+        function closeAddClient() {
+
+            document.getElementById("addClientModal").style.display = "none";
+
+        }
+
+
+
+        function nextClientId() {
+
+            const usedIds = Array.from(
+                document.querySelectorAll(".client-name p")
+            ).map(function(label) {
+                const match = label.textContent.match(/CL-(\d+)/);
+                return match ? Number(match[1]) : 0;
+            });
+
+            return "CL-" + String(Math.max(0, ...usedIds) + 1).padStart(3, "0");
+
+        }
+
+
+        function formatReviewDate(date) {
+
+            return new Intl.DateTimeFormat("en-GB", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric"
+            }).format(date);
+
+        }
+
+
+        function createClientRow(name, id, business, risk, review) {
+
+            const row = document.createElement("div");
+            row.className = "client-row";
+
+            const clientName = document.createElement("div");
+            clientName.className = "client-name";
+
+            const avatar = document.createElement("div");
+            avatar.className = "client-avatar";
+            avatar.textContent = name.trim().split(/\s+/).slice(0, 2)
+                .map(function(part) { return part[0]; }).join("").toUpperCase();
+
+            const identity = document.createElement("div");
+            const heading = document.createElement("h3");
+            heading.textContent = name;
+            const idLabel = document.createElement("p");
+            idLabel.textContent = "Client ID: " + id;
+            identity.append(heading, idLabel);
+            clientName.append(avatar, identity);
+
+            const businessCell = document.createElement("span");
+            businessCell.textContent = business;
+            const documentsCell = document.createElement("span");
+            documentsCell.textContent = "0";
+            const riskCell = document.createElement("span");
+            riskCell.className = "client-risk " + risk.toLowerCase();
+            riskCell.textContent = risk;
+            const reviewCell = document.createElement("span");
+            reviewCell.textContent = review;
+
+            const action = document.createElement("button");
+            action.className = "client-action";
+            action.textContent = "View";
+            action.addEventListener("click", function() {
+                showClient(name, id, business, "0", risk, review);
+            });
+
+            row.append(clientName, businessCell, documentsCell, riskCell, reviewCell, action);
+            return row;
+
+        }
+
+
+        document
+            .getElementById("addClientForm")
+            .addEventListener("submit", function(event) {
+
+                event.preventDefault();
+
+                const name = document.getElementById("newClientName").value.trim();
+                const id = nextClientId();
+                const business = document.getElementById("newBusinessType").value.trim();
+                const risk = document.getElementById("newRiskLevel").value;
+                const review = formatReviewDate(new Date());
+
+                if (!name || !business) {
+                    alert("Enter a client name and business type.");
+                    return;
+                }
+
+                document.querySelector(".client-table").appendChild(
+                    createClientRow(name, id, business, risk, review)
+                );
+                applyClientFilter();
+                document.getElementById("totalClients").textContent =
+                    Number(document.getElementById("totalClients").textContent) + 1;
+                if (risk === "High") {
+                    document.getElementById("highRiskClientCount").textContent =
+                        Number(document.getElementById("highRiskClientCount").textContent) + 1;
+                }
+
+                alert(name + " (" + id + ") was added to this page. Frontend demo data is not saved after reload.");
+                document.getElementById("addClientForm").reset();
+                closeAddClient();
+
+            });
+
+
+
+        /* =========================================
+           FILTER MENU
+        ========================================= */
+
+        function toggleFilter() {
+
+            const menu =
+                document.getElementById("filterMenu");
+
+
+            if (menu.style.display === "block") {
+
+                menu.style.display = "none";
+
+            } else {
+
+                menu.style.display = "block";
+
+            }
+
+        }
+
+
+
+        /* =========================================
+           FILTER CLIENTS
+        ========================================= */
+
+        let activeClientFilter = "all";
+
+
+        function applyClientFilter() {
+
+            const rows =
+                document.querySelectorAll(
+                    ".client-table .client-row:not(.client-header)"
+                );
+            const searchValue = document.getElementById("clientSearch").value.trim().toLowerCase();
+            let visibleCount = 0;
+
+
+            rows.forEach(function(row) {
+
+                const riskBadge =
+                    row.querySelector(".client-risk");
+                const matchesSearch = row.textContent.toLowerCase().includes(searchValue);
+
+                const matchesRisk = activeClientFilter === "all" ||
+                    (riskBadge && riskBadge.classList.contains(activeClientFilter));
+                row.style.display = matchesRisk && matchesSearch ? "grid" : "none";
+                if (matchesRisk && matchesSearch) {
+                    visibleCount++;
+                }
+
+            });
+
+            document.getElementById("clientEmpty").style.display =
+                visibleCount === 0 ? "block" : "none";
+
+        }
+
+
+        function filterClients(risk) {
+
+            activeClientFilter = risk;
+            applyClientFilter();
+            document
+                .getElementById("filterMenu")
+                .style.display = "none";
+
+        }
+
+
+
+        /* =========================================
+           CLOSE MODALS / FILTER
+           WHEN CLICKING OUTSIDE
+        ========================================= */
+
+        window.onclick = function(event) {
+
+            const clientModal =
+                document.getElementById("clientModal");
+
+            const addClientModal =
+                document.getElementById("addClientModal");
+
+            const filterMenu =
+                document.getElementById("filterMenu");
+
+            const filterButton =
+                document.querySelector(".filter-container");
+
+
+            if (event.target === clientModal) {
+
+                closeClient();
+
+            }
+
+
+            if (event.target === addClientModal) {
+
+                closeAddClient();
+
+            }
+
+
+            if (
+                filterMenu &&
+                !filterButton.contains(event.target)
+            ) {
+
+                filterMenu.style.display = "none";
+
+            }
+
+        };
+
+
+    </script>
+
+
+    <script src="js/api.js"></script>
+    <script src="js/backend-integration.js"></script>
+</body>
+</html>

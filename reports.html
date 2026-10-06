@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports | CA-Copilot</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .reports-page {
+            padding: 28px;
+        }
+
+        .reports-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .reports-header h2 {
+            margin: 0 0 6px;
+        }
+
+        .reports-header p {
+            margin: 0;
+            color: #64748b;
+        }
+
+        .generate-btn {
+            border: none;
+            background: #1e293b;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .generate-btn:hover {
+            opacity: 0.9;
+        }
+
+        .report-summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .summary-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.06);
+        }
+
+        .summary-card .label {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .summary-card .number {
+            color: #0f172a;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .summary-card small {
+            display: block;
+            margin-top: 6px;
+            color: #64748b;
+        }
+
+        .reports-panel {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.06);
+        }
+
+        .reports-toolbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .report-search {
+            flex: 1;
+            min-width: 240px;
+            padding: 11px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .report-search:focus {
+            border-color: #64748b;
+        }
+
+        .report-filter {
+            min-width: 160px;
+            padding: 11px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .reports-table-wrapper {
+            overflow-x: auto;
+        }
+
+        .reports-table {
+            width: 100%;
+            min-width: 850px;
+            border-collapse: collapse;
+        }
+
+        .reports-table th,
+        .reports-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .reports-table th {
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+        }
+
+        .reports-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .completed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .draft {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .pending {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .action-btn {
+            border: none;
+            padding: 7px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-right: 5px;
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .action-btn:hover {
+            opacity: 0.85;
+        }
+
+        .download-btn {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .empty-message {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+        }
+
+        /* Modal */
+
+        .report-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.55);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 620px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+        }
+
+        .close-btn {
+            border: none;
+            background: transparent;
+            font-size: 24px;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .report-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        .detail-box {
+            background: #f8fafc;
+            padding: 13px;
+            border-radius: 8px;
+        }
+
+        .detail-box.full {
+            grid-column: 1 / -1;
+        }
+
+        .detail-box span {
+            display: block;
+            color: #64748b;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .detail-box strong {
+            color: #0f172a;
+        }
+
+        /* Generate form */
+
+        .generate-form {
+            display: grid;
+            gap: 14px;
+        }
+
+        .generate-form label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .generate-form select,
+        .generate-form input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 11px 13px;
+            margin-top: 6px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .generate-form button {
+            border: none;
+            padding: 11px;
+            border-radius: 8px;
+            background: #1e293b;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        @media (max-width: 1000px) {
+            .report-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .reports-page {
+                padding: 16px;
+            }
+
+            .report-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .report-details {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-box.full {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>CA-Copilot</h2>
+            <p>Audit & Compliance</p>
+        </div>
+
+        <nav>
+
+            <a href="dashboard.html">
+                📊 Dashboard
+            </a>
+
+            <a href="clients.html">
+                👥 Clients
+            </a>
+
+            <a href="documents.html">
+                📁 Documents
+            </a>
+
+            <a href="reconciliation.html">
+                🔄 Reconciliation
+            </a>
+
+            <a href="risk.html">
+                ⚠️ Risk & Anomalies
+            </a>
+
+            <a href="ask-client.html">
+                💬 Ask Client File
+            </a>
+
+            <a href="reports.html" class="active">
+                📑 Reports
+            </a>
+
+            <a href="settings.html">
+                ⚙️ Settings
+            </a>
+
+            <a href="index.html">
+                🏠 Back to Home
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <div class="reports-page">
+
+            <!-- Header -->
+            <div class="reports-header">
+
+                <div>
+                    <h2>Reports</h2>
+                    <p>
+                        Generate, review and manage audit and compliance reports.
+                    </p>
+                </div>
+
+                <button
+                    class="generate-btn"
+                    onclick="openGenerateModal()"
+                >
+                    + Generate Report
+                </button>
+
+            </div>
+
+
+            <!-- Summary -->
+            <div class="report-summary">
+
+                <div class="summary-card">
+                    <div class="label">Total Reports</div>
+                    <div class="number" id="totalReportCount">42</div>
+                    <small>Generated this financial year</small>
+                </div>
+
+                <div class="summary-card">
+                    <div class="label">Completed</div>
+                    <div class="number">31</div>
+                    <small>Ready for review</small>
+                </div>
+
+                <div class="summary-card">
+                    <div class="label">Draft Reports</div>
+                    <div class="number" id="draftReportCount">7</div>
+                    <small>Currently being prepared</small>
+                </div>
+
+                <div class="summary-card">
+                    <div class="label">Pending</div>
+                    <div class="number">4</div>
+                    <small>Require action</small>
+                </div>
+
+            </div>
+
+
+            <!-- Reports Panel -->
+            <div class="reports-panel">
+
+                <div class="reports-toolbar">
+
+                    <input
+                        type="text"
+                        id="reportSearch"
+                        aria-label="Search reports"
+                        class="report-search"
+                        placeholder="Search by report, client or ID..."
+                        oninput="searchReports()"
+                    >
+
+                    <select
+                        id="reportFilter"
+                        class="report-filter"
+                        onchange="filterReports()"
+                    >
+                        <option value="all">All Reports</option>
+                        <option value="completed">Completed</option>
+                        <option value="draft">Draft</option>
+                        <option value="pending">Pending</option>
+                    </select>
+
+                </div>
+
+
+                <div class="reports-table-wrapper">
+
+                    <table class="reports-table" id="reportsTable">
+
+                        <thead>
+                            <tr>
+                                <th>Report ID</th>
+                                <th>Client</th>
+                                <th>Report Type</th>
+                                <th>Financial Year</th>
+                                <th>Status</th>
+                                <th>Generated</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr data-status="completed">
+
+                                <td>REP-1001</td>
+                                <td>ABC Enterprises</td>
+                                <td>Audit Summary</td>
+                                <td>2026–27</td>
+
+                                <td>
+                                    <span class="status-badge completed">
+                                        Completed
+                                    </span>
+                                </td>
+
+                                <td>06 Oct 2026</td>
+
+                                <td>
+                                    <button
+                                        class="action-btn"
+                                        onclick="viewReport(
+                                            'REP-1001',
+                                            'ABC Enterprises',
+                                            'Audit Summary',
+                                            '2026–27',
+                                            'Completed',
+                                            '06 Oct 2026'
+                                        )"
+                                    >
+                                        View
+                                    </button>
+
+                                    <button
+                                        class="action-btn download-btn"
+                                        onclick="downloadReport('REP-1001')"
+                                    >
+                                        Download
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+                            <tr data-status="completed">
+
+                                <td>REP-1002</td>
+                                <td>Shree Traders</td>
+                                <td>GST Compliance</td>
+                                <td>2026–27</td>
+
+                                <td>
+                                    <span class="status-badge completed">
+                                        Completed
+                                    </span>
+                                </td>
+
+                                <td>05 Oct 2026</td>
+
+                                <td>
+                                    <button
+                                        class="action-btn"
+                                        onclick="viewReport(
+                                            'REP-1002',
+                                            'Shree Traders',
+                                            'GST Compliance',
+                                            '2026–27',
+                                            'Completed',
+                                            '05 Oct 2026'
+                                        )"
+                                    >
+                                        View
+                                    </button>
+
+                                    <button
+                                        class="action-btn download-btn"
+                                        onclick="downloadReport('REP-1002')"
+                                    >
+                                        Download
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+                            <tr data-status="draft">
+
+                                <td>REP-1003</td>
+                                <td>Patil Industries</td>
+                                <td>Risk Assessment</td>
+                                <td>2026–27</td>
+
+                                <td>
+                                    <span class="status-badge draft">
+                                        Draft
+                                    </span>
+                                </td>
+
+                                <td>04 Oct 2026</td>
+
+                                <td>
+                                    <button
+                                        class="action-btn"
+                                        onclick="viewReport(
+                                            'REP-1003',
+                                            'Patil Industries',
+                                            'Risk Assessment',
+                                            '2026–27',
+                                            'Draft',
+                                            '04 Oct 2026'
+                                        )"
+                                    >
+                                        View
+                                    </button>
+
+                                    <button
+                                        class="action-btn download-btn"
+                                        onclick="downloadReport('REP-1003')"
+                                    >
+                                        Download
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+                            <tr data-status="pending">
+
+                                <td>REP-1004</td>
+                                <td>Global Services</td>
+                                <td>Financial Review</td>
+                                <td>2026–27</td>
+
+                                <td>
+                                    <span class="status-badge pending">
+                                        Pending
+                                    </span>
+                                </td>
+
+                                <td>02 Oct 2026</td>
+
+                                <td>
+                                    <button
+                                        class="action-btn"
+                                        onclick="viewReport(
+                                            'REP-1004',
+                                            'Global Services',
+                                            'Financial Review',
+                                            '2026–27',
+                                            'Pending',
+                                            '02 Oct 2026'
+                                        )"
+                                    >
+                                        View
+                                    </button>
+
+                                    <button
+                                        class="action-btn download-btn"
+                                        onclick="downloadReport('REP-1004')"
+                                    >
+                                        Download
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+                            <tr data-status="completed">
+
+                                <td>REP-1005</td>
+                                <td>ABC Enterprises</td>
+                                <td>Reconciliation Report</td>
+                                <td>2026–27</td>
+
+                                <td>
+                                    <span class="status-badge completed">
+                                        Completed
+                                    </span>
+                                </td>
+
+                                <td>01 Oct 2026</td>
+
+                                <td>
+                                    <button
+                                        class="action-btn"
+                                        onclick="viewReport(
+                                            'REP-1005',
+                                            'ABC Enterprises',
+                                            'Reconciliation Report',
+                                            '2026–27',
+                                            'Completed',
+                                            '01 Oct 2026'
+                                        )"
+                                    >
+                                        View
+                                    </button>
+
+                                    <button
+                                        class="action-btn download-btn"
+                                        onclick="downloadReport('REP-1005')"
+                                    >
+                                        Download
+                                    </button>
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                    <div
+                        id="emptyMessage"
+                        class="empty-message"
+                    >
+                        No matching reports found.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- View Report Modal -->
+
+<div
+    id="viewModal"
+    class="report-modal"
+>
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h3>Report Details</h3>
+
+            <button
+                class="close-btn"
+                type="button"
+                aria-label="Close report details"
+                onclick="closeViewModal()"
+            >
+                &times;
+            </button>
+
+        </div>
+
+
+        <div class="report-details">
+
+            <div class="detail-box">
+                <span>Report ID</span>
+                <strong id="detailId">-</strong>
+            </div>
+
+            <div class="detail-box">
+                <span>Client</span>
+                <strong id="detailClient">-</strong>
+            </div>
+
+            <div class="detail-box">
+                <span>Report Type</span>
+                <strong id="detailType">-</strong>
+            </div>
+
+            <div class="detail-box">
+                <span>Financial Year</span>
+                <strong id="detailFY">-</strong>
+            </div>
+
+            <div class="detail-box">
+                <span>Status</span>
+                <strong id="detailStatus">-</strong>
+            </div>
+
+            <div class="detail-box">
+                <span>Generated Date</span>
+                <strong id="detailDate">-</strong>
+            </div>
+
+            <div class="detail-box full">
+                <span>Description</span>
+                <strong>
+                    This report contains audit, compliance and financial
+                    review information for the selected client.
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Generate Report Modal -->
+
+<div
+    id="generateModal"
+    class="report-modal"
+>
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h3>Generate New Report</h3>
+
+            <button
+                class="close-btn"
+                type="button"
+                aria-label="Close generate report dialog"
+                onclick="closeGenerateModal()"
+            >
+                &times;
+            </button>
+
+        </div>
+
+
+        <form
+            class="generate-form"
+            onsubmit="generateReport(event)"
+        >
+
+            <label>
+                Client
+
+                <select id="generateClient" required>
+
+                    <option value="">
+                        Select Client
+                    </option>
+
+                    <option>
+                        ABC Enterprises
+                    </option>
+
+                    <option>
+                        Shree Traders
+                    </option>
+
+                    <option>
+                        Patil Industries
+                    </option>
+
+                    <option>
+                        Global Services
+                    </option>
+
+                </select>
+
+            </label>
+
+
+            <label>
+                Report Type
+
+                <select id="generateType" required>
+
+                    <option value="">
+                        Select Report Type
+                    </option>
+
+                    <option>
+                        Audit Summary
+                    </option>
+
+                    <option>
+                        GST Compliance
+                    </option>
+
+                    <option>
+                        Risk Assessment
+                    </option>
+
+                    <option>
+                        Financial Review
+                    </option>
+
+                    <option>
+                        Reconciliation Report
+                    </option>
+
+                </select>
+
+            </label>
+
+
+            <label>
+                Financial Year
+
+                <select id="generateFY" required>
+
+                    <option>2026–27</option>
+                    <option>2025–26</option>
+                    <option>2024–25</option>
+
+                </select>
+
+            </label>
+
+
+            <button type="submit">
+                Generate Report
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /* View report */
+
+    function viewReport(
+        id,
+        client,
+        type,
+        fy,
+        status,
+        date
+    ) {
+
+        document.getElementById("detailId").textContent = id;
+        document.getElementById("detailClient").textContent = client;
+        document.getElementById("detailType").textContent = type;
+        document.getElementById("detailFY").textContent = fy;
+        document.getElementById("detailStatus").textContent = status;
+        document.getElementById("detailDate").textContent = date;
+
+        document.getElementById("viewModal").style.display = "flex";
+    }
+
+
+    /* Close view modal */
+
+    function closeViewModal() {
+
+        document.getElementById("viewModal").style.display = "none";
+
+    }
+
+
+    /* Download demo */
+
+    function downloadReport(id) {
+
+        alert(
+            "Frontend demo only: no report file is attached for " +
+            id +
+            "; no download occurred."
+        );
+
+    }
+
+
+    /* Open generate modal */
+
+    function openGenerateModal() {
+
+        document.getElementById("generateModal").style.display = "flex";
+
+    }
+
+
+    /* Close generate modal */
+
+    function closeGenerateModal() {
+
+        document.getElementById("generateModal").style.display = "none";
+
+    }
+
+
+    /* Generate report */
+
+    function generateReport(event) {
+
+        event.preventDefault();
+
+        const client =
+            document.getElementById("generateClient").value;
+        const type =
+            document.getElementById("generateType").value;
+
+        const fy =
+            document.getElementById("generateFY").value;
+
+        const rows = Array.from(
+            document.querySelectorAll("#reportsTable tbody tr")
+        );
+        const lastId = rows.reduce(function(maxId, row) {
+            const match = row.cells[0].textContent.match(/REP-(\d+)/);
+            return match ? Math.max(maxId, Number(match[1])) : maxId;
+        }, 1005);
+        const id = "REP-" + String(lastId + 1).padStart(4, "0");
+        const date = new Intl.DateTimeFormat("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }).format(new Date());
+
+        const row = document.createElement("tr");
+        row.dataset.status = "draft";
+        [id, client, type, fy].forEach(function(value) {
+            const cell = document.createElement("td");
+            cell.textContent = value;
+            row.appendChild(cell);
+        });
+
+        const statusCell = document.createElement("td");
+        const statusBadge = document.createElement("span");
+        statusBadge.className = "status-badge draft";
+        statusBadge.textContent = "Draft";
+        statusCell.appendChild(statusBadge);
+        row.appendChild(statusCell);
+
+        const dateCell = document.createElement("td");
+        dateCell.textContent = date;
+        row.appendChild(dateCell);
+
+        const actionsCell = document.createElement("td");
+        const viewButton = document.createElement("button");
+        viewButton.className = "action-btn";
+        viewButton.textContent = "View";
+        viewButton.addEventListener("click", function() {
+            viewReport(id, client, type, fy, "Draft", date);
+        });
+
+        const downloadButton = document.createElement("button");
+        downloadButton.className = "action-btn download-btn";
+        downloadButton.textContent = "Download";
+        downloadButton.addEventListener("click", function() {
+            downloadReport(id);
+        });
+
+        actionsCell.append(viewButton, downloadButton);
+        row.appendChild(actionsCell);
+        document.querySelector("#reportsTable tbody").appendChild(row);
+
+        document.getElementById("totalReportCount").textContent =
+            Number(document.getElementById("totalReportCount").textContent) + 1;
+        document.getElementById("draftReportCount").textContent =
+            Number(document.getElementById("draftReportCount").textContent) + 1;
+        applyReportFilters();
+
+        alert(
+            "Report added to this page as frontend demo data. It is not saved after reload.\n\n" +
+            "Report ID: " + id + "\n" +
+            "Client: " + client + "\n" +
+            "Report: " + type + "\n" +
+            "Financial Year: " + fy
+        );
+
+        event.target.reset();
+
+        closeGenerateModal();
+
+    }
+
+
+    /* Search */
+
+    function searchReports() {
+
+        applyReportFilters();
+
+    }
+
+
+    /* Combined search and status filter */
+
+    function filterReports() {
+
+        applyReportFilters();
+
+    }
+
+
+    function applyReportFilters() {
+
+        const filter = document.getElementById("reportFilter").value;
+        const search = document.getElementById("reportSearch").value.toLowerCase();
+        const rows = document.querySelectorAll("#reportsTable tbody tr");
+        let visible = 0;
+
+        rows.forEach(function(row) {
+            const matchesFilter = filter === "all" || row.dataset.status === filter;
+            const matchesSearch = row.textContent.toLowerCase().includes(search);
+            row.style.display = matchesFilter && matchesSearch ? "" : "none";
+            if (matchesFilter && matchesSearch) {
+                visible++;
+            }
+        });
+
+        document.getElementById("emptyMessage").style.display =
+            visible === 0 ? "block" : "none";
+
+    }
+
+
+    /* Close modals by clicking outside */
+
+    window.onclick = function(event) {
+
+        const viewModal =
+            document.getElementById("viewModal");
+
+        const generateModal =
+            document.getElementById("generateModal");
+
+        if (event.target === viewModal) {
+            closeViewModal();
+        }
+
+        if (event.target === generateModal) {
+            closeGenerateModal();
+        }
+
+    };
+
+</script>
+
+    <script src="js/api.js"></script>
+    <script src="js/backend-integration.js"></script>
+</body>
+</html>

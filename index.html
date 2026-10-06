@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CA-Copilot | Intelligent Financial Review</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* =========================
+           Navigation Fix
+        ========================= */
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 25px;
+        }
+
+        .navbar nav {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .navbar nav a {
+            text-decoration: none;
+        }
+
+        /* Separate Dashboard Button */
+        .dashboard-nav {
+            margin-left: 10px;
+            padding-left: 20px;
+            border-left: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .dashboard-nav a {
+            display: inline-block;
+            background: #2563eb;
+            color: #ffffff !important;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.30);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-nav a:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.40);
+        }
+
+        /* Mobile Navigation */
+        @media (max-width: 900px) {
+            .navbar {
+                flex-wrap: wrap;
+                height: auto;
+                min-height: 76px;
+                padding-top: 12px;
+                padding-bottom: 12px;
+            }
+
+            .navbar nav {
+                order: 3;
+                width: 100%;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .dashboard-nav {
+                margin-left: 0;
+                padding-left: 15px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navbar nav {
+                display: flex;
+                justify-content: flex-start;
+            }
+
+            .dashboard-nav {
+                border-left: none;
+                padding-left: 0;
+                width: 100%;
+            }
+
+            .dashboard-nav a {
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         Navigation
+    ========================== -->
+
+    <header class="navbar">
+
+        <div class="logo">
+            <span>CA</span>-Copilot
+        </div>
+
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#workflow">How It Works</a>
+            <a href="#about">About</a>
+
+            <!-- Separate Dashboard Button -->
+            <span class="dashboard-nav">
+                <a href="dashboard.html">Open Dashboard →</a>
+            </span>
+        </nav>
+
+        <button class="login-btn">Get Started</button>
+
+    </header>
+
+
+    <!-- =========================
+         Hero Section
+    ========================== -->
+
+    <section id="home" class="hero">
+
+        <div class="hero-content">
+
+            <p class="tagline">FINANCIAL REVIEW WORKSPACE · FRONTEND DEMO</p>
+
+            <h1>
+                Work Smarter.<br>
+                <span>Review Faster.</span>
+            </h1>
+
+            <p class="hero-text">
+                CA-Copilot is a frontend prototype for exploring sample
+                document, reconciliation, risk and client-review workflows.
+                It does not process real files or provide live AI analysis.
+            </p>
+
+            <div class="hero-buttons">
+                <button class="primary-btn">Get Started →</button>
+                <button class="secondary-btn">Explore Features</button>
+            </div>
+
+        </div>
+
+
+        <!-- Dashboard Preview -->
+
+        <div class="dashboard-preview">
+
+            <div class="preview-header">
+
+                <div>
+                    <p>Financial Overview</p>
+                    <h3>CA Review Dashboard</h3>
+                </div>
+
+                <span class="status">● Sample Data</span>
+
+            </div>
+
+
+            <div class="stats">
+
+                <div class="stat-card">
+                    <small>Total Clients</small>
+                    <strong>24</strong>
+                    <span>+4 this month</span>
+                </div>
+
+                <div class="stat-card">
+                    <small>Documents</small>
+                    <strong>186</strong>
+                    <span>Sample records</span>
+                </div>
+
+                <div class="stat-card warning">
+                    <small>Mismatches</small>
+                    <strong>12</strong>
+                    <span>Needs Review</span>
+                </div>
+
+                <div class="stat-card danger">
+                    <small>High Risk</small>
+                    <strong>5</strong>
+                    <span>Attention Required</span>
+                </div>
+
+            </div>
+
+
+            <div class="review-box">
+
+                <div>
+                    <small>Latest Review</small>
+                    <h4>ABC Enterprises · TXN-1005</h4>
+                </div>
+
+                <div class="amount">
+                    <span>₹43,750</span>
+                    <b>→</b>
+                    <span>₹45,000</span>
+                </div>
+
+                <div class="mismatch">
+                    ⚠ ₹1,250 shortfall vs books · Frontend sample
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         Features
+    ========================== -->
+
+    <section id="features" class="features-section">
+
+        <p class="section-label">POWERFUL FEATURES</p>
+
+        <h2>
+            Everything a CA needs<br>
+            for smarter review
+        </h2>
+
+
+        <div class="feature-grid">
+
+            <div class="feature-card" role="button" tabindex="0" aria-pressed="false">
+
+                <div class="icon">📄</div>
+
+                <h3>Document Intelligence</h3>
+
+                <p>
+                    Explore a sample document review workflow; files are not processed in this demo.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card" role="button" tabindex="0" aria-pressed="false">
+
+                <div class="icon">🔄</div>
+
+                <h3>Smart Reconciliation</h3>
+
+                <p>
+                    Review sample bank transactions and their displayed differences.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card" role="button" tabindex="0" aria-pressed="false">
+
+                <div class="icon">⚠️</div>
+
+                <h3>Risk Detection</h3>
+
+                <p>
+                    Browse sample anomalies and update their status in this page.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card" role="button" tabindex="0" aria-pressed="false">
+
+                <div class="icon">📊</div>
+
+                <h3>Review Dashboard</h3>
+
+                <p>
+                    Explore sample client, document, risk and review information.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         Workflow
+    ========================== -->
+
+    <section id="workflow" class="workflow-section">
+
+        <p class="section-label">SIMPLE WORKFLOW</p>
+
+        <h2>
+            From documents to<br>
+            actionable insights
+        </h2>
+
+
+        <div class="workflow">
+
+            <div class="step">
+
+                <span>01</span>
+
+                <h3>Upload</h3>
+
+                <p>
+                    Select a file in a demo form; no file is uploaded or processed.
+                </p>
+
+            </div>
+
+
+            <div class="line"></div>
+
+
+            <div class="step">
+
+                <span>02</span>
+
+                <h3>Analyze</h3>
+
+                <p>
+                    Review sample records and their displayed metadata.
+                </p>
+
+            </div>
+
+
+            <div class="line"></div>
+
+
+            <div class="step">
+
+                <span>03</span>
+
+                <h3>Detect</h3>
+
+                <p>
+                    Inspect sample mismatches and anomalies.
+                </p>
+
+            </div>
+
+
+            <div class="line"></div>
+
+
+            <div class="step">
+
+                <span>04</span>
+
+                <h3>Review</h3>
+
+                <p>
+                    Update frontend demo statuses for review.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         About
+    ========================== -->
+
+    <section id="about" class="about-section">
+
+        <div>
+
+            <p class="section-label">
+                BUILT FOR ACCOUNTING PROFESSIONALS
+            </p>
+
+            <h2>
+                Designed for CA review.
+            </h2>
+
+            <p>
+                This frontend prototype demonstrates ways to organize
+                financial review tasks while keeping professional
+                decisions with the Chartered Accountant.
+            </p>
+
+        </div>
+
+
+        <div class="about-card">
+
+            <div class="big-icon">🧠</div>
+
+            <h3>Sample Evidence</h3>
+
+            <p>
+                Demo alerts link to sample transactions or documents for manual review.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         Footer
+    ========================== -->
+
+    <footer>
+
+        <div class="logo">
+            <span>CA</span>-Copilot
+        </div>
+
+        <p>
+            Frontend prototype · sample data only
+        </p>
+
+        <p class="copyright">
+            © 2026 CA-Copilot | Frontend demonstration
+        </p>
+
+    </footer>
+
+
+    <script src="js/script.js"></script>
+
+</body>
+</html>

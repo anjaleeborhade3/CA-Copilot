@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CA-Copilot | Dashboard</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* =========================
+           Dashboard Action Fixes
+        ========================= */
+
+        .dashboard-btn,
+        .view-btn,
+        .review-status {
+            cursor: pointer;
+        }
+
+        .quick-card {
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .quick-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .review-row {
+            cursor: pointer;
+            transition: background 0.2s ease;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .review-info,
+        .review-amount {
+            min-width: 0;
+        }
+
+        .review-info h3,
+        .review-info p,
+        .review-amount span {
+            overflow-wrap: anywhere;
+        }
+
+        .review-row:hover {
+            background: rgba(37, 99, 235, 0.04);
+        }
+
+        .sidebar-menu a,
+        .sidebar-bottom a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body class="dashboard-page">
+
+    <!-- =========================
+         Sidebar
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <span>CA</span>-Copilot
+        </div>
+
+        <div class="sidebar-menu">
+
+            <a href="dashboard.html" class="active">
+                <span>▦</span>
+                Dashboard
+            </a>
+
+            <a href="clients.html">
+                <span>👥</span>
+                Clients
+            </a>
+
+            <a href="documents.html">
+                <span>📄</span>
+                Documents
+            </a>
+
+            <a href="reconciliation.html">
+                <span>🔄</span>
+                Reconciliation
+            </a>
+
+            <a href="risk.html">
+                <span>⚠</span>
+                Risk & Anomalies
+            </a>
+
+            <a href="ask-client.html">
+                <span>💬</span>
+                Ask Client File
+            </a>
+
+            <a href="reports.html">
+                <span>📊</span>
+                Reports
+            </a>
+
+        </div>
+
+        <div class="sidebar-bottom">
+
+            <a href="settings.html">
+                ⚙ Settings
+            </a>
+
+            <a href="index.html">
+                ← Back to Home
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================
+         Main Dashboard
+    ========================== -->
+
+    <main class="dashboard-main">
+
+        <!-- Topbar -->
+
+        <div class="dashboard-topbar">
+
+            <div>
+                <p class="section-label">OVERVIEW</p>
+
+                <h1>Good evening, CA 👋</h1>
+
+                <p class="dashboard-subtitle">
+                    Review sample activity and frontend-only demo actions.
+                </p>
+            </div>
+
+            <button
+                class="dashboard-btn"
+                onclick="uploadDocument()">
+                + Upload Document
+            </button>
+
+        </div>
+
+
+        <!-- =========================
+             Stats
+        ========================== -->
+
+        <section class="dashboard-stats">
+
+            <div class="dashboard-stat">
+                <div class="stat-icon">👥</div>
+
+                <p>Total Clients</p>
+
+                <h2>24</h2>
+
+                <span>+4 this month</span>
+            </div>
+
+
+            <div class="dashboard-stat">
+                <div class="stat-icon">📄</div>
+
+                <p>Documents Processed</p>
+
+                <h2>186</h2>
+
+                <span>+28 this week</span>
+            </div>
+
+
+            <div class="dashboard-stat warning-stat">
+                <div class="stat-icon">⚠️</div>
+
+                <p>Mismatches</p>
+
+                <h2>12</h2>
+
+                <span>Needs review</span>
+            </div>
+
+
+            <div class="dashboard-stat danger-stat">
+                <div class="stat-icon">🚨</div>
+
+                <p>High Risk Cases</p>
+
+                <h2>5</h2>
+
+                <span>Attention required</span>
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             Dashboard Grid
+        ========================== -->
+
+        <section class="dashboard-grid">
+
+
+            <!-- Recent Reviews -->
+
+            <div class="dashboard-panel reviews-panel">
+
+                <div class="panel-heading">
+
+                    <div>
+                        <p class="section-label">RECENT ACTIVITY</p>
+
+                        <h2>Recent Reviews</h2>
+                    </div>
+
+                    <button
+                        class="view-btn"
+                        onclick="openDocuments()">
+                        View All
+                    </button>
+
+                </div>
+
+
+                <!-- Review 1 -->
+
+                <a
+                    class="review-row"
+                    href="reconciliation.html?transaction=TXN-1005">
+
+                    <div class="review-info">
+
+                        <div class="document-icon">
+                            📄
+                        </div>
+
+                        <div>
+                            <h3>ABC Enterprises</h3>
+
+                            <p>
+                                Bank Payment Reconciliation
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="review-amount">
+
+                        <strong>₹43,750</strong>
+
+                        <span class="warning-text">
+                            ⚠ -₹1,250 mismatch
+                        </span>
+
+                    </div>
+
+
+                    <span class="review-status warning">
+                        Unmatched
+                    </span>
+
+                </a>
+
+
+                <!-- Review 2 -->
+
+                <a
+                    class="review-row"
+                    href="risk.html?anomaly=AN-1002">
+
+                    <div class="review-info">
+
+                        <div class="document-icon">
+                            📄
+                        </div>
+
+                        <div>
+                            <h3>Shree Traders</h3>
+
+                            <p>
+                                GST Mismatch
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="review-amount">
+
+                        <strong>₹52,500</strong>
+
+                        <span class="danger-text">
+                            ⚠ GST amount does not match the accounting record
+                        </span>
+
+                    </div>
+
+
+                    <span class="review-status warning">
+                        Reviewed
+                    </span>
+
+                </a>
+
+
+                <!-- Review 3 -->
+
+                <a
+                    class="review-row"
+                    href="reconciliation.html?transaction=TXN-1003">
+
+                    <div class="review-info">
+
+                        <div class="document-icon">
+                            📄
+                        </div>
+
+                        <div>
+                            <h3>Patil Industries</h3>
+
+                            <p>
+                                Bank Reconciliation
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="review-amount">
+
+                        <strong>₹1,25,000</strong>
+
+                        <span class="danger-text">
+                            ⚠ ₹7,000 difference
+                        </span>
+
+                    </div>
+
+
+                    <span class="review-status danger">
+                        Exception
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <!-- =========================
+                 Risk Overview
+            ========================== -->
+
+            <div class="dashboard-panel risk-panel">
+
+                <div class="panel-heading">
+
+                    <div>
+                        <p class="section-label">
+                            RISK ANALYSIS
+                        </p>
+
+                        <h2>Risk Overview</h2>
+                    </div>
+
+                </div>
+
+
+                <div class="risk-item">
+
+                    <div class="risk-title">
+                        <span>High Risk</span>
+                        <strong>5</strong>
+                    </div>
+
+                    <div class="progress">
+                        <div class="progress-high"></div>
+                    </div>
+
+                </div>
+
+
+                <div class="risk-item">
+
+                    <div class="risk-title">
+                        <span>Medium Risk</span>
+                        <strong>8</strong>
+                    </div>
+
+                    <div class="progress">
+                        <div class="progress-medium"></div>
+                    </div>
+
+                </div>
+
+
+                <div class="risk-item">
+
+                    <div class="risk-title">
+                        <span>Low Risk</span>
+                        <strong>17</strong>
+                    </div>
+
+                    <div class="progress">
+                        <div class="progress-low"></div>
+                    </div>
+
+                </div>
+
+
+                <div class="risk-summary">
+
+                    <span>Recorded Anomalies</span>
+
+                    <strong>32%</strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             Quick Actions
+        ========================== -->
+
+        <section class="quick-actions">
+
+            <p class="section-label">
+                QUICK ACTIONS
+            </p>
+
+
+            <div class="quick-grid">
+
+
+                <!-- Upload Invoice -->
+
+                <a
+                    class="quick-card"
+                    href="documents.html?open=upload">
+
+                    <span>📄</span>
+
+                    <div>
+                        <h3>Upload Invoice</h3>
+
+                        <p>
+                            Upload and store a document locally
+                        </p>
+                    </div>
+
+                </a>
+
+
+                <!-- Start Reconciliation -->
+
+                <a
+                    class="quick-card"
+                    href="reconciliation.html?open=statement">
+
+                    <span>🔄</span>
+
+                    <div>
+                        <h3>Start Reconciliation</h3>
+
+                        <p>
+                            Store a bank statement locally
+                        </p>
+                    </div>
+
+                </a>
+
+
+                <!-- Review Risk Cases -->
+
+                <a
+                    class="quick-card"
+                    href="risk.html?filter=open">
+
+                    <span>⚠️</span>
+
+                    <div>
+                        <h3>Review Risk Cases</h3>
+
+                        <p>
+                            Check flagged transactions
+                        </p>
+                    </div>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             Footer
+        ========================== -->
+
+        <footer class="dashboard-footer">
+
+            <p>
+                © 2026 CA-Copilot |
+                Intelligent Financial Review System
+            </p>
+
+        </footer>
+
+    </main>
+
+
+    <!-- =========================
+         JavaScript
+    ========================== -->
+
+    <script>
+
+        function uploadDocument() {
+            window.location.href = "documents.html?open=upload";
+        }
+
+        function openDocuments() {
+            window.location.href = "documents.html";
+        }
+
+    </script>
+
+    <script src="js/api.js"></script>
+    <script src="js/backend-integration.js"></script>
+</body>
+</html>

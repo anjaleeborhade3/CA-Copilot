@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risk & Anomalies | CA-Copilot</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .risk-page {
+            padding: 28px;
+        }
+
+        .risk-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .risk-header h2 {
+            margin: 0 0 6px;
+        }
+
+        .risk-header p {
+            margin: 0;
+            color: #64748b;
+        }
+
+        .scan-btn {
+            border: none;
+            padding: 12px 18px;
+            border-radius: 8px;
+            background: #1e293b;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .scan-btn:hover {
+            opacity: 0.9;
+        }
+
+        .risk-summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .risk-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.06);
+        }
+
+        .risk-card .label {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .risk-card .number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .risk-card small {
+            display: block;
+            margin-top: 6px;
+            color: #64748b;
+        }
+
+        .risk-panel {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.06);
+        }
+
+        .risk-toolbar {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .risk-search {
+            flex: 1;
+            min-width: 240px;
+            padding: 11px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .risk-search:focus {
+            border-color: #64748b;
+        }
+
+        .risk-filter {
+            padding: 11px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: white;
+            min-width: 170px;
+        }
+
+        .risk-table-wrapper {
+            overflow-x: auto;
+        }
+
+        .risk-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        .risk-table th,
+        .risk-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .risk-table th {
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+        }
+
+        .risk-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .risk-badge,
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .high {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .low {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .open {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .reviewed {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .resolved {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .action-btn {
+            border: none;
+            padding: 7px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-right: 5px;
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .action-btn:hover {
+            opacity: 0.85;
+        }
+
+        .resolve-btn {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .empty-message {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+        }
+
+        /* Modal */
+
+        .risk-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.55);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .risk-modal-content {
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-top h3 {
+            margin: 0;
+        }
+
+        .close-btn {
+            border: none;
+            background: transparent;
+            font-size: 24px;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .anomaly-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        .detail-box {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 13px;
+        }
+
+        .detail-box.full {
+            grid-column: 1 / -1;
+        }
+
+        .detail-box span {
+            display: block;
+            color: #64748b;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .detail-box strong {
+            color: #0f172a;
+        }
+
+        .modal-actions {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .modal-actions button {
+            border: none;
+            padding: 10px 15px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .modal-resolve {
+            background: #166534;
+            color: white;
+        }
+
+        .modal-close {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        @media (max-width: 1000px) {
+            .risk-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .risk-page {
+                padding: 16px;
+            }
+
+            .risk-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .anomaly-details {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-box.full {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>CA-Copilot</h2>
+            <p>Audit & Compliance</p>
+        </div>
+
+        <nav>
+
+            <a href="dashboard.html">
+                📊 Dashboard
+            </a>
+
+            <a href="clients.html">
+                👥 Clients
+            </a>
+
+            <a href="documents.html">
+                📁 Documents
+            </a>
+
+            <a href="reconciliation.html">
+                🔄 Reconciliation
+            </a>
+
+            <a href="risk.html" class="active">
+                ⚠️ Risk & Anomalies
+            </a>
+
+            <a href="ask-client.html">
+                💬 Ask Client File
+            </a>
+
+            <a href="reports.html">
+                📑 Reports
+            </a>
+
+            <a href="settings.html">
+                ⚙️ Settings
+            </a>
+
+            <a href="index.html">
+                🏠 Back to Home
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <div class="risk-page">
+
+            <!-- Header -->
+            <div class="risk-header">
+
+                <div>
+                    <h2>Risk & Anomalies</h2>
+                    <p>Monitor unusual transactions, compliance risks and audit exceptions.</p>
+                </div>
+
+                <button class="scan-btn" onclick="runRiskScan()">
+                    🔍 Run Risk Scan
+                </button>
+
+            </div>
+
+
+            <!-- Summary -->
+            <div class="risk-summary">
+
+                <div class="risk-card">
+                    <div class="label">High Risk</div>
+                    <div class="number">8</div>
+                    <small>Requires immediate attention</small>
+                </div>
+
+                <div class="risk-card">
+                    <div class="label">Medium Risk</div>
+                    <div class="number">17</div>
+                    <small>Needs review</small>
+                </div>
+
+                <div class="risk-card">
+                    <div class="label">Low Risk</div>
+                    <div class="number">31</div>
+                    <small>Monitor periodically</small>
+                </div>
+
+                <div class="risk-card">
+                    <div class="label">Total Anomalies</div>
+                    <div class="number">56</div>
+                    <small>Detected this financial year</small>
+                </div>
+
+            </div>
+
+
+            <!-- Main Panel -->
+            <div class="risk-panel">
+
+                <div class="risk-toolbar">
+
+                    <input
+                        type="text"
+                        id="riskSearch"
+                        aria-label="Search anomalies"
+                        class="risk-search"
+                        placeholder="Search by client, anomaly or ID..."
+                        oninput="searchRisks()"
+                    >
+
+                    <select
+                        id="riskFilter"
+                        class="risk-filter"
+                        onchange="filterRisks()"
+                    >
+                        <option value="all">All Risks</option>
+                        <option value="high">High Risk</option>
+                        <option value="medium">Medium Risk</option>
+                        <option value="low">Low Risk</option>
+                        <option value="open">Open</option>
+                        <option value="reviewed">Reviewed</option>
+                        <option value="resolved">Resolved</option>
+                    </select>
+
+                </div>
+
+
+                <!-- Table -->
+                <div class="risk-table-wrapper">
+
+                    <table class="risk-table" id="riskTable">
+
+                        <thead>
+                            <tr>
+                                <th>Anomaly ID</th>
+                                <th>Client</th>
+                                <th>Category</th>
+                                <th>Amount</th>
+                                <th>Risk</th>
+                                <th>Status</th>
+                                <th>Detected</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr data-risk="high" data-status="open">
+
+                                <td>AN-1001</td>
+                                <td>ABC Enterprises</td>
+                                <td>Duplicate Invoice</td>
+                                <td>₹85,000</td>
+
+                                <td>
+                                    <span class="risk-badge high">High</span>
+                                </td>
+
+                                <td>
+                                    <span class="status-badge open">Open</span>
+                                </td>
+
+                                <td>06 Oct 2026</td>
+
+                                <td>
+                                    <button class="action-btn"
+                                        onclick="viewAnomaly('AN-1001','ABC Enterprises','Duplicate Invoice','₹85,000','High','Open','06 Oct 2026','Two invoices with identical invoice number and amount were detected.')">
+                                        View
+                                    </button>
+
+                                    <button class="action-btn resolve-btn"
+                                        onclick="resolveAnomaly(this)">
+                                        Resolve
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+                            <tr data-risk="medium" data-status="reviewed">
+
+                                <td>AN-1002</td>
+                                <td>Shree Traders</td>
+                                <td>GST Mismatch</td>
+                                <td>₹52,500</td>
+
+                                <td>
+                                    <span class="risk-badge medium">Medium</span>
+                                </td>
+
+                                <td>
+                                    <span class="status-badge reviewed">Reviewed</span>
+                                </td>
+
+                                <td>05 Oct 2026</td>
+
+                                <td>
+                                    <button class="action-btn"
+                                        onclick="viewAnomaly('AN-1002','Shree Traders','GST Mismatch','₹52,500','Medium','Reviewed','05 Oct 2026','GST amount reported in the invoice does not match the accounting record.')">
+                                        View
+                                    </button>
+
+                                    <button class="action-btn resolve-btn"
+                                        onclick="resolveAnomaly(this)">
+                                        Resolve
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+                            <tr data-risk="high" data-status="open">
+
+                                <td>AN-1003</td>
+                                <td>Patil Industries</td>
+                                <td>Unusual Transaction</td>
+                                <td>₹1,25,000</td>
+
+                                <td>
+                                    <span class="risk-badge high">High</span>
+                                </td>
+
+                                <td>
+                                    <span class="status-badge open">Open</span>
+                                </td>
+
+                                <td>04 Oct 2026</td>
+
+                                <td>
+                                    <button class="action-btn"
+                                        onclick="viewAnomaly('AN-1003','Patil Industries','Unusual Transaction','₹1,25,000','High','Open','04 Oct 2026','Transaction value is significantly higher than the client’s normal transaction pattern.')">
+                                        View
+                                    </button>
+
+                                    <button class="action-btn resolve-btn"
+                                        onclick="resolveAnomaly(this)">
+                                        Resolve
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+                            <tr data-risk="low" data-status="resolved">
+
+                                <td>AN-1004</td>
+                                <td>Global Services</td>
+                                <td>Round Amount</td>
+                                <td>₹96,000</td>
+
+                                <td>
+                                    <span class="risk-badge low">Low</span>
+                                </td>
+
+                                <td>
+                                    <span class="status-badge resolved">Resolved</span>
+                                </td>
+
+                                <td>02 Oct 2026</td>
+
+                                <td>
+                                    <button class="action-btn"
+                                        onclick="viewAnomaly('AN-1004','Global Services','Round Amount','₹96,000','Low','Resolved','02 Oct 2026','Large round-value transaction was flagged for routine verification.')">
+                                        View
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+                            <tr data-risk="medium" data-status="open">
+
+                                <td>AN-1005</td>
+                                <td>ABC Enterprises</td>
+                                <td>Bank Reconciliation</td>
+                                <td>₹43,750</td>
+
+                                <td>
+                                    <span class="risk-badge medium">Medium</span>
+                                </td>
+
+                                <td>
+                                    <span class="status-badge open">Open</span>
+                                </td>
+
+                                <td>01 Oct 2026</td>
+
+                                <td>
+                                    <button class="action-btn"
+                                        onclick="viewAnomaly('AN-1005','ABC Enterprises','Bank Reconciliation','₹43,750','Medium','Open','01 Oct 2026','Bank statement amount differs from the accounting ledger.')">
+                                        View
+                                    </button>
+
+                                    <button class="action-btn resolve-btn"
+                                        onclick="resolveAnomaly(this)">
+                                        Resolve
+                                    </button>
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                    <div id="emptyMessage" class="empty-message">
+                        No matching anomalies found.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- Anomaly Details Modal -->
+
+<div id="anomalyModal" class="risk-modal">
+
+    <div class="risk-modal-content">
+
+        <div class="modal-top">
+
+            <h3>Anomaly Details</h3>
+
+            <button class="close-btn" type="button" aria-label="Close anomaly details" onclick="closeAnomaly()">
+                &times;
+            </button>
+
+        </div>
+
+
+        <div class="anomaly-details">
+
+            <div class="detail-box">
+                <span>Anomaly ID</span>
+                <strong id="detailId">-</strong>
+            </div>
+
+            <div class="detail-box">
+                <span>Client</span>
+                <strong id="detailClient">-</strong>
+            </div>
+
+            <div class="detail-box">
+                <span>Category</span>
+                <strong id="detailCategory">-</strong>
+            </div>
+
+            <div class="detail-box">
+                <span>Amount</span>
+                <strong id="detailAmount">-</strong>
+            </div>
+
+            <div class="detail-box">
+                <span>Risk Level</span>
+                <strong id="detailRisk">-</strong>
+            </div>
+
+            <div class="detail-box">
+                <span>Status</span>
+                <strong id="detailStatus">-</strong>
+            </div>
+
+            <div class="detail-box">
+                <span>Detected Date</span>
+                <strong id="detailDate">-</strong>
+            </div>
+
+            <div class="detail-box full">
+                <span>Reason / Observation</span>
+                <strong id="detailReason">-</strong>
+            </div>
+
+        </div>
+
+
+        <div class="modal-actions">
+
+            <button class="modal-close" type="button" aria-label="Close anomaly details" onclick="closeAnomaly()">
+                Close
+            </button>
+
+            <button class="modal-resolve" onclick="resolveFromModal()">
+                ✓ Mark Resolved
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    let currentRow = null;
+
+
+    /* View anomaly */
+
+    function viewAnomaly(id, client, category, amount, risk, status, date, reason) {
+
+        document.getElementById("detailId").textContent = id;
+        document.getElementById("detailClient").textContent = client;
+        document.getElementById("detailCategory").textContent = category;
+        document.getElementById("detailAmount").textContent = amount;
+        document.getElementById("detailRisk").textContent = risk;
+        document.getElementById("detailStatus").textContent = status;
+        document.getElementById("detailDate").textContent = date;
+        document.getElementById("detailReason").textContent = reason;
+
+        currentRow = Array.from(
+            document.querySelectorAll("#riskTable tbody tr")
+        ).find(function(row) {
+            return row.cells[0].textContent.trim() === id;
+        }) || null;
+
+        document.getElementById("anomalyModal").style.display = "flex";
+    }
+
+
+    /* Close modal */
+
+    function closeAnomaly() {
+
+        document.getElementById("anomalyModal").style.display = "none";
+
+    }
+
+
+    /* Resolve anomaly */
+
+    function resolveAnomaly(button) {
+
+        const row = button.closest("tr");
+
+        markAnomalyResolved(row);
+
+        button.remove();
+
+        applyRiskFilters();
+        alert("Anomaly marked as Resolved in this page. Frontend demo state is not saved after reload.");
+
+    }
+
+
+    /* Resolve from modal */
+
+    function resolveFromModal() {
+
+        if (currentRow) {
+
+            markAnomalyResolved(currentRow);
+
+        }
+
+        closeAnomaly();
+
+        applyRiskFilters();
+        alert("Anomaly marked as Resolved in this page. Frontend demo state is not saved after reload.");
+
+    }
+
+
+    function markAnomalyResolved(row) {
+
+        const statusBadge = row.querySelector(".status-badge");
+        statusBadge.textContent = "Resolved";
+        statusBadge.className = "status-badge resolved";
+        row.dataset.status = "resolved";
+
+        const resolveButton = row.querySelector(".resolve-btn");
+        if (resolveButton) {
+            resolveButton.remove();
+        }
+
+    }
+
+
+    /* Search and status/risk filter */
+
+    function searchRisks() {
+
+        applyRiskFilters();
+
+
+    }
+
+
+    function applyRiskFilters() {
+
+        const searchValue = document.getElementById("riskSearch").value.toLowerCase();
+        const filter = document.getElementById("riskFilter").value;
+        const rows = document.querySelectorAll("#riskTable tbody tr");
+        let visible = 0;
+
+        rows.forEach(function(row) {
+
+            const risk = row.dataset.risk;
+            const status = row.dataset.status;
+            const matchesFilter =
+                filter === "all" ||
+                (["high", "medium", "low"].includes(filter) ? risk === filter : status === filter);
+            const matchesSearch = row.textContent.toLowerCase().includes(searchValue);
+
+            row.style.display = matchesFilter && matchesSearch ? "" : "none";
+            if (matchesFilter && matchesSearch) {
+                visible++;
+            }
+
+        });
+
+        document.getElementById("emptyMessage").style.display =
+            visible === 0 ? "block" : "none";
+
+    }
+
+
+    /* Filter */
+
+    function filterRisks() {
+
+        applyRiskFilters();
+
+    }
+
+
+    /* Demo Risk Scan */
+
+    function runRiskScan() {
+
+        alert(
+            "Frontend demo only: no live risk scan was run and no records were changed.\n\n" +
+            "The risk totals shown are sample dashboard figures."
+        );
+
+    }
+
+
+    /* Close modal when clicking outside */
+
+    window.onclick = function(event) {
+
+        const modal =
+            document.getElementById("anomalyModal");
+
+        if (event.target === modal) {
+            closeAnomaly();
+        }
+
+    };
+// Apply the requested filter or open a matching anomaly from Dashboard.
+const urlParams = new URLSearchParams(window.location.search);
+
+if (urlParams.get("filter") === "open") {
+    document.getElementById("riskFilter").value = "open";
+    filterRisks();
+}
+
+const anomalyId = urlParams.get("anomaly");
+
+if (anomalyId) {
+    const anomalyRow = Array.from(
+        document.querySelectorAll("#riskTable tbody tr")
+    ).find(function(row) {
+        return row.cells[0].textContent.trim() === anomalyId;
+    });
+
+    if (anomalyRow) {
+        anomalyRow.querySelector(".action-btn").click();
+    }
+}
+</script>
+
+    <script src="js/api.js"></script>
+    <script src="js/backend-integration.js"></script>
+</body>
+</html>

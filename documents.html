@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CA-Copilot | Documents</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+
+        /* =========================================
+           DOCUMENTS PAGE
+        ========================================= */
+
+        .documents-panel {
+            margin-top: 25px;
+            overflow-x: auto;
+        }
+
+        .documents-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .document-search {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .document-search input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 11px 14px;
+            background: #132942;
+            border: 1px solid #263d57;
+            border-radius: 7px;
+            color: #ffffff;
+            outline: none;
+            font-size: 12px;
+        }
+
+        .document-search input::placeholder {
+            color: #66788d;
+        }
+
+        .document-search input:focus {
+            border-color: #4f7ea8;
+        }
+
+        .document-filter {
+            position: relative;
+        }
+
+        .document-filter-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 42px;
+            width: 155px;
+            background: #0d1b2a;
+            border: 1px solid #263d57;
+            border-radius: 8px;
+            padding: 6px;
+            z-index: 1000;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+        }
+
+        .document-filter-menu button {
+            width: 100%;
+            padding: 9px 10px;
+            background: transparent;
+            border: none;
+            border-radius: 5px;
+            color: #9aaabd;
+            text-align: left;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .document-filter-menu button:hover {
+            background: #132942;
+            color: #ffffff;
+        }
+
+
+        /* =========================================
+           DOCUMENT TABLE
+        ========================================= */
+
+        .document-table {
+            width: 100%;
+        }
+
+        .document-row {
+            display: grid;
+            grid-template-columns: 2.2fr 1.5fr 1.3fr 1fr 1.2fr 1.2fr;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 10px;
+            border-bottom: 1px solid #1d3147;
+            color: #9aaabd;
+            font-size: 12px;
+        }
+
+        .document-row:last-child {
+            border-bottom: none;
+        }
+
+        .document-row:hover {
+            background: rgba(19, 41, 66, 0.35);
+        }
+
+        .document-header {
+            color: #66788d;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .document-name {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .document-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 7px;
+            background: #132942;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .document-name h3 {
+            color: #ffffff;
+            font-size: 12px;
+            margin: 0 0 4px;
+        }
+
+        .document-name p {
+            color: #66788d;
+            font-size: 10px;
+            margin: 0;
+        }
+
+
+        /* =========================================
+           STATUS BADGES
+        ========================================= */
+
+        .document-status {
+            display: inline-flex;
+            width: fit-content;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .document-status.reviewed {
+            background: rgba(46, 160, 67, 0.15);
+            color: #67d47a;
+        }
+
+        .document-status.pending {
+            background: rgba(230, 170, 40, 0.15);
+            color: #e9bd55;
+        }
+
+        .document-status.flagged {
+            background: rgba(220, 60, 60, 0.15);
+            color: #ff7777;
+        }
+
+
+        /* =========================================
+           DOCUMENT ACTIONS
+        ========================================= */
+
+        .document-actions {
+            display: flex;
+            gap: 7px;
+        }
+
+        .document-action {
+            background: transparent;
+            border: 1px solid #263d57;
+            color: #9aaabd;
+            padding: 6px 9px;
+            border-radius: 5px;
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+        .document-action:hover {
+            background: #132942;
+            color: #ffffff;
+        }
+
+        .document-action.delete:hover {
+            color: #ff7777;
+            border-color: #8b3d3d;
+        }
+
+
+        /* =========================================
+           EMPTY MESSAGE
+        ========================================= */
+
+        .no-documents {
+            display: none;
+            text-align: center;
+            padding: 35px;
+            color: #66788d;
+            font-size: 12px;
+        }
+
+
+        /* =========================================
+           MODAL FORM
+        ========================================= */
+
+        .document-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.70);
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .document-modal-content {
+            width: 440px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: #0d1b2a;
+            border: 1px solid #263d57;
+            border-radius: 14px;
+            padding: 28px;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .document-modal-content h2 {
+            color: #ffffff;
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+
+        .document-modal-subtitle {
+            color: #66788d;
+            font-size: 12px;
+            margin-bottom: 22px;
+        }
+
+        .document-close {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            background: transparent;
+            border: none;
+            color: #9aaabd;
+            font-size: 25px;
+            cursor: pointer;
+        }
+
+        .document-close:hover {
+            color: #ffffff;
+        }
+
+        .document-form-group {
+            margin-bottom: 16px;
+        }
+
+        .document-form-group label {
+            display: block;
+            color: #9aaabd;
+            font-size: 11px;
+            margin-bottom: 7px;
+        }
+
+        .document-form-group input,
+        .document-form-group select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 11px 12px;
+            background: #132942;
+            border: 1px solid #263d57;
+            border-radius: 7px;
+            color: #ffffff;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .document-form-group input:focus,
+        .document-form-group select:focus {
+            border-color: #4f7ea8;
+        }
+
+        .document-form-group input::placeholder {
+            color: #66788d;
+        }
+
+        .upload-submit {
+            width: 100%;
+            margin-top: 5px;
+        }
+
+
+        /* =========================================
+           DETAILS
+        ========================================= */
+
+        .document-details {
+            display: grid;
+            gap: 13px;
+        }
+
+        .document-detail-box {
+            background: #132942;
+            border-radius: 8px;
+            padding: 13px 15px;
+        }
+
+        .document-detail-box span {
+            display: block;
+            color: #66788d;
+            font-size: 10px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .document-detail-box strong {
+            color: #ffffff;
+            font-size: 13px;
+        }
+
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 1000px) {
+
+            .document-row {
+                grid-template-columns: 2fr 1fr 1fr;
+            }
+
+            .document-header span:nth-child(3),
+            .document-header span:nth-child(4),
+            .document-header span:nth-child(5),
+
+            .document-row > span:nth-child(3),
+            .document-row > span:nth-child(4),
+            .document-row > span:nth-child(5) {
+                display: none;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body class="dashboard-page">
+
+
+    <!-- =========================================
+         SIDEBAR
+    ========================================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <span>CA</span>-Copilot
+        </div>
+
+
+        <div class="sidebar-menu">
+
+            <a href="dashboard.html">
+                <span>▦</span>
+                Dashboard
+            </a>
+
+            <a href="clients.html">
+                <span>👥</span>
+                Clients
+            </a>
+
+            <a href="documents.html" class="active">
+                <span>📄</span>
+                Documents
+            </a>
+
+            <a href="reconciliation.html">
+                <span>🔄</span>
+                Reconciliation
+            </a>
+
+            <a href="risk.html">
+                <span>⚠</span>
+                Risk & Anomalies
+            </a>
+
+            <a href="ask-client.html">
+                <span>💬</span>
+                Ask Client File
+            </a>
+
+            <a href="reports.html">
+                <span>📊</span>
+                Reports
+            </a>
+
+        </div>
+
+
+        <div class="sidebar-bottom">
+
+            <a href="settings.html">
+                ⚙ Settings
+            </a>
+
+            <a href="index.html">
+                ← Back to Home
+            </a>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =========================================
+         MAIN
+    ========================================= -->
+
+    <main class="dashboard-main">
+
+
+        <!-- TOPBAR -->
+
+        <div class="dashboard-topbar">
+
+            <div>
+
+                <p class="section-label">
+                    DOCUMENT MANAGEMENT
+                </p>
+
+                <h1>
+                    Documents
+                </h1>
+
+                <p class="dashboard-subtitle">
+                    Upload, review and manage client financial documents.
+                </p>
+
+            </div>
+
+
+            <button
+                class="dashboard-btn"
+                onclick="openUploadModal()">
+
+                + Upload Document
+
+            </button>
+
+        </div>
+
+
+
+        <!-- =========================================
+             SUMMARY CARDS
+        ========================================= -->
+
+        <section class="dashboard-stats">
+
+
+            <div class="dashboard-stat">
+
+                <div class="stat-icon">
+                    📄
+                </div>
+
+                <p>
+                    Total Documents
+                </p>
+
+                <h2 id="totalDocuments">
+                    186
+                </h2>
+
+                <span>
+                    All uploaded files
+                </span>
+
+            </div>
+
+
+            <div class="dashboard-stat">
+
+                <div class="stat-icon">
+                    ⏳
+                </div>
+
+                <p>
+                    Pending Review
+                </p>
+
+                <h2 id="pendingDocuments">
+                    12
+                </h2>
+
+                <span>
+                    Awaiting review
+                </span>
+
+            </div>
+
+
+            <div class="dashboard-stat warning-stat">
+
+                <div class="stat-icon">
+                    ⚠️
+                </div>
+
+                <p>
+                    Flagged
+                </p>
+
+                <h2 id="flaggedDocuments">
+                    5
+                </h2>
+
+                <span>
+                    Requires attention
+                </span>
+
+            </div>
+
+
+            <div class="dashboard-stat danger-stat">
+
+                <div class="stat-icon">
+                    ✅
+                </div>
+
+                <p>
+                    Reviewed
+                </p>
+
+                <h2 id="reviewedDocuments">
+                    169
+                </h2>
+
+                <span>
+                    Successfully reviewed
+                </span>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =========================================
+             DOCUMENT PANEL
+        ========================================= -->
+
+        <section class="dashboard-panel documents-panel">
+
+
+            <div class="panel-heading">
+
+                <div>
+
+                    <p class="section-label">
+                        DOCUMENT LIBRARY
+                    </p>
+
+                    <h2>
+                        All Documents
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- SEARCH + FILTER -->
+
+            <div class="documents-toolbar">
+
+
+                <div class="document-search">
+
+                    <input
+                        type="text"
+                        id="documentSearch"
+                        aria-label="Search documents"
+                        placeholder="🔍 Search by document or client..."
+                        oninput="searchDocuments()">
+
+                </div>
+
+
+                <div class="document-filter">
+
+                    <button
+                        class="view-btn"
+                        onclick="toggleDocumentFilter()">
+
+                        Filter ▾
+
+                    </button>
+
+
+                    <div
+                        id="documentFilterMenu"
+                        class="document-filter-menu">
+
+                        <button onclick="filterDocuments('all')">
+                            📄 All Documents
+                        </button>
+
+                        <button onclick="filterDocuments('reviewed')">
+                            ✅ Reviewed
+                        </button>
+
+                        <button onclick="filterDocuments('pending')">
+                            ⏳ Pending
+                        </button>
+
+                        <button onclick="filterDocuments('flagged')">
+                            ⚠️ Flagged
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =========================================
+                 DOCUMENT TABLE
+            ========================================= -->
+
+            <div class="document-table">
+
+
+                <!-- HEADER -->
+
+                <div class="document-row document-header">
+
+                    <span>
+                        Document
+                    </span>
+
+                    <span>
+                        Client
+                    </span>
+
+                    <span>
+                        Type
+                    </span>
+
+                    <span>
+                        Status
+                    </span>
+
+                    <span>
+                        Upload Date
+                    </span>
+
+                    <span>
+                        Action
+                    </span>
+
+                </div>
+
+
+
+                <!-- DOCUMENT 1 -->
+
+                <div
+                    class="document-row document-item"
+                    data-status="reviewed"
+                    data-search="abc enterprises gst return gst">
+
+                    <div class="document-name">
+
+                        <div class="document-icon">
+                            📄
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                GST_Return_Q2.pdf
+                            </h3>
+
+                            <p>
+                                2.4 MB
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <span>
+                        ABC Enterprises
+                    </span>
+
+
+                    <span>
+                        GST
+                    </span>
+
+
+                    <span class="document-status reviewed">
+                        Reviewed
+                    </span>
+
+
+                    <span>
+                        06 Oct 2026
+                    </span>
+
+
+                    <div class="document-actions">
+
+                        <button
+                            class="document-action"
+                            onclick="viewDocument(
+                                'GST_Return_Q2.pdf',
+                                'ABC Enterprises',
+                                'GST',
+                                'Reviewed',
+                                '06 Oct 2026'
+                            )">
+
+                            View
+
+                        </button>
+
+                        <button
+                            class="document-action"
+                            type="button"
+                            aria-label="Download GST_Return_Q2.pdf"
+                            onclick="downloadDocument('GST_Return_Q2.pdf')">
+
+                            ↓
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- DOCUMENT 2 -->
+
+                <div
+                    class="document-row document-item"
+                    data-status="pending"
+                    data-search="shree traders bank statement bank">
+
+                    <div class="document-name">
+
+                        <div class="document-icon">
+                            🏦
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Bank_Statement_Sep.pdf
+                            </h3>
+
+                            <p>
+                                4.1 MB
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <span>
+                        Shree Traders
+                    </span>
+
+
+                    <span>
+                        Bank Statement
+                    </span>
+
+
+                    <span class="document-status pending">
+                        Pending
+                    </span>
+
+
+                    <span>
+                        05 Oct 2026
+                    </span>
+
+
+                    <div class="document-actions">
+
+                        <button
+                            class="document-action"
+                            onclick="viewDocument(
+                                'Bank_Statement_Sep.pdf',
+                                'Shree Traders',
+                                'Bank Statement',
+                                'Pending',
+                                '05 Oct 2026'
+                            )">
+
+                            View
+
+                        </button>
+
+                        <button
+                            class="document-action"
+                            type="button"
+                            aria-label="Download Bank_Statement_Sep.pdf"
+                            onclick="downloadDocument('Bank_Statement_Sep.pdf')">
+
+                            ↓
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- DOCUMENT 3 -->
+
+                <div
+                    class="document-row document-item"
+                    data-status="flagged"
+                    data-search="patil industries invoice invoice">
+
+                    <div class="document-name">
+
+                        <div class="document-icon">
+                            🧾
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Invoice_1045.pdf
+                            </h3>
+
+                            <p>
+                                1.8 MB
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <span>
+                        Patil Industries
+                    </span>
+
+
+                    <span>
+                        Invoice
+                    </span>
+
+
+                    <span class="document-status flagged">
+                        Flagged
+                    </span>
+
+
+                    <span>
+                        04 Oct 2026
+                    </span>
+
+
+                    <div class="document-actions">
+
+                        <button
+                            class="document-action"
+                            onclick="viewDocument(
+                                'Invoice_1045.pdf',
+                                'Patil Industries',
+                                'Invoice',
+                                'Flagged',
+                                '04 Oct 2026'
+                            )">
+
+                            View
+
+                        </button>
+
+                        <button
+                            class="document-action"
+                            type="button"
+                            aria-label="Download Invoice_1045.pdf"
+                            onclick="downloadDocument('Invoice_1045.pdf')">
+
+                            ↓
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- DOCUMENT 4 -->
+
+                <div
+                    class="document-row document-item"
+                    data-status="reviewed"
+                    data-search="global services balance sheet balance sheet">
+
+                    <div class="document-name">
+
+                        <div class="document-icon">
+                            📊
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Balance_Sheet_FY26.pdf
+                            </h3>
+
+                            <p>
+                                3.6 MB
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <span>
+                        Global Services
+                    </span>
+
+
+                    <span>
+                        Balance Sheet
+                    </span>
+
+
+                    <span class="document-status reviewed">
+                        Reviewed
+                    </span>
+
+
+                    <span>
+                        02 Oct 2026
+                    </span>
+
+
+                    <div class="document-actions">
+
+                        <button
+                            class="document-action"
+                            onclick="viewDocument(
+                                'Balance_Sheet_FY26.pdf',
+                                'Global Services',
+                                'Balance Sheet',
+                                'Reviewed',
+                                '02 Oct 2026'
+                            )">
+
+                            View
+
+                        </button>
+
+                        <button
+                            class="document-action"
+                            type="button"
+                            aria-label="Download Balance_Sheet_FY26.pdf"
+                            onclick="downloadDocument('Balance_Sheet_FY26.pdf')">
+
+                            ↓
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+
+            <div
+                id="noDocuments"
+                class="no-documents">
+
+                No documents found.
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- FOOTER -->
+
+        <footer class="dashboard-footer">
+
+            <p>
+                © 2026 CA-Copilot | Intelligent Financial Review System
+            </p>
+
+        </footer>
+
+
+    </main>
+
+
+
+    <!-- =========================================
+         VIEW DOCUMENT MODAL
+    ========================================= -->
+
+    <div
+        id="documentDetailsModal"
+        class="document-modal">
+
+
+        <div class="document-modal-content">
+
+
+            <button
+                class="document-close"
+                type="button"
+                aria-label="Close document details"
+                onclick="closeDocumentDetails()">
+
+                ×
+
+            </button>
+
+
+            <h2 id="detailDocumentName">
+                Document
+            </h2>
+
+
+            <p class="document-modal-subtitle">
+                Document Information
+            </p>
+
+
+            <div class="document-details">
+
+
+                <div class="document-detail-box">
+
+                    <span>
+                        Client
+                    </span>
+
+                    <strong id="detailClient">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="document-detail-box">
+
+                    <span>
+                        Document Type
+                    </span>
+
+                    <strong id="detailType">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="document-detail-box">
+
+                    <span>
+                        Status
+                    </span>
+
+                    <strong id="detailStatus">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="document-detail-box">
+
+                    <span>
+                        Upload Date
+                    </span>
+
+                    <strong id="detailDate">
+                        -
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================
+         UPLOAD DOCUMENT MODAL
+    ========================================= -->
+
+    <div
+        id="uploadDocumentModal"
+        class="document-modal">
+
+
+        <div class="document-modal-content">
+
+
+            <button
+                class="document-close"
+                type="button"
+                aria-label="Close upload document dialog"
+                onclick="closeUploadModal()">
+
+                ×
+
+            </button>
+
+
+            <h2>
+                Upload Document
+            </h2>
+
+
+            <p class="document-modal-subtitle">
+                Files are stored locally in the backend. No document analysis is performed.
+            </p>
+
+
+            <form id="uploadDocumentForm">
+
+
+                <div class="document-form-group">
+
+                    <label for="uploadClient">
+                        Client Name
+                    </label>
+
+                    <select id="uploadClient" required>
+
+                        <option value="">
+                            Select Client
+                        </option>
+
+                        <option>
+                            ABC Enterprises
+                        </option>
+
+                        <option>
+                            Shree Traders
+                        </option>
+
+                        <option>
+                            Patil Industries
+                        </option>
+
+                        <option>
+                            Global Services
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="document-form-group">
+
+                    <label for="uploadDocumentName">
+                        Document Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="uploadDocumentName"
+                        placeholder="Example: GST_Return_Q3.pdf"
+                        required>
+
+                </div>
+
+
+                <div class="document-form-group">
+
+                    <label for="uploadDocumentType">
+                        Document Type
+                    </label>
+
+                    <select id="uploadDocumentType" required>
+
+                        <option value="">
+                            Select Type
+                        </option>
+
+                        <option>
+                            ITR
+                        </option>
+
+                        <option>
+                            GST
+                        </option>
+
+                        <option>
+                            Bank Statement
+                        </option>
+
+                        <option>
+                            Invoice
+                        </option>
+
+                        <option>
+                            Balance Sheet
+                        </option>
+
+                        <option>
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="document-form-group">
+
+                    <label for="financialYear">
+                        Financial Year
+                    </label>
+
+                    <select id="financialYear">
+
+                        <option>
+                            FY 2025-26
+                        </option>
+
+                        <option>
+                            FY 2026-27
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="document-form-group">
+
+                    <label for="documentFile">
+                        Select File
+                    </label>
+
+                    <input
+                        type="file"
+                        id="documentFile"
+                        accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+                        required>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="dashboard-btn upload-submit">
+
+                    📤 Upload Document
+
+                </button>
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================
+         JAVASCRIPT
+    ========================================= -->
+
+    <script>
+
+
+        /* =========================================
+           VIEW DOCUMENT
+        ========================================= */
+
+        function viewDocument(
+            name,
+            client,
+            type,
+            status,
+            date
+        ) {
+
+            document.getElementById(
+                "detailDocumentName"
+            ).textContent = name;
+
+            document.getElementById(
+                "detailClient"
+            ).textContent = client;
+
+            document.getElementById(
+                "detailType"
+            ).textContent = type;
+
+            document.getElementById(
+                "detailStatus"
+            ).textContent = status;
+
+            document.getElementById(
+                "detailDate"
+            ).textContent = date;
+
+            document.getElementById(
+                "documentDetailsModal"
+            ).style.display = "flex";
+
+        }
+
+
+        function closeDocumentDetails() {
+
+            document.getElementById(
+                "documentDetailsModal"
+            ).style.display = "none";
+
+        }
+
+
+
+        /* =========================================
+           DOWNLOAD DEMO
+        ========================================= */
+
+        function downloadDocument(name) {
+
+            alert(
+                "Frontend demo only: no downloadable file is attached for " + name + "."
+            );
+
+        }
+
+        function createDocumentRow(name, client, type, date) {
+            const row = document.createElement("div");
+            row.className = "document-row document-item";
+            row.dataset.status = "pending";
+            row.dataset.search = [name, client, type, "pending"].join(" ").toLowerCase();
+
+            const documentName = document.createElement("div");
+            documentName.className = "document-name";
+            const icon = document.createElement("div");
+            icon.className = "document-icon";
+            icon.textContent = "📄";
+            const nameDetails = document.createElement("div");
+            const heading = document.createElement("h3");
+            heading.textContent = name;
+            const note = document.createElement("p");
+            note.textContent = "Frontend demo · file not stored";
+            nameDetails.append(heading, note);
+            documentName.append(icon, nameDetails);
+
+            const clientCell = document.createElement("span");
+            clientCell.textContent = client;
+            const typeCell = document.createElement("span");
+            typeCell.textContent = type;
+            const statusCell = document.createElement("span");
+            statusCell.className = "document-status pending";
+            statusCell.textContent = "Pending";
+            const dateCell = document.createElement("span");
+            dateCell.textContent = date;
+
+            const actions = document.createElement("div");
+            actions.className = "document-actions";
+            const viewButton = document.createElement("button");
+            viewButton.className = "document-action";
+            viewButton.type = "button";
+            viewButton.textContent = "View";
+            viewButton.addEventListener("click", function() {
+                viewDocument(name, client, type, "Pending", date);
+            });
+            const downloadButton = document.createElement("button");
+            downloadButton.className = "document-action";
+            downloadButton.type = "button";
+            downloadButton.textContent = "↓";
+            downloadButton.setAttribute("aria-label", "Download " + name);
+            downloadButton.addEventListener("click", function() {
+                downloadDocument(name);
+            });
+            actions.append(viewButton, downloadButton);
+
+            row.append(documentName, clientCell, typeCell, statusCell, dateCell, actions);
+            return row;
+        }
+
+
+
+        /* =========================================
+           UPLOAD MODAL
+        ========================================= */
+
+        function openUploadModal() {
+
+            document.getElementById(
+                "uploadDocumentModal"
+            ).style.display = "flex";
+
+        }
+
+
+        function closeUploadModal() {
+
+            document.getElementById(
+                "uploadDocumentModal"
+            ).style.display = "none";
+
+        }
+
+
+
+        /* =========================================
+           UPLOAD FORM
+        ========================================= */
+
+        document
+            .getElementById("uploadDocumentForm")
+            .addEventListener(
+                "submit",
+                function(event) {
+
+                    event.preventDefault();
+
+
+                    const client =
+                        document.getElementById(
+                            "uploadClient"
+                        ).value;
+
+
+                    const documentName =
+                        document.getElementById(
+                            "uploadDocumentName"
+                        ).value;
+
+                    const documentType =
+                        document.getElementById(
+                            "uploadDocumentType"
+                        ).value;
+
+                    const date = new Intl.DateTimeFormat("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric"
+                    }).format(new Date());
+                    const table = document.querySelector(".document-table");
+                    table.insertBefore(
+                        createDocumentRow(documentName, client, documentType, date),
+                        table.children[1]
+                    );
+                    document.getElementById("totalDocuments").textContent =
+                        Number(document.getElementById("totalDocuments").textContent) + 1;
+                    document.getElementById("pendingDocuments").textContent =
+                        Number(document.getElementById("pendingDocuments").textContent) + 1;
+                    applyDocumentFilters();
+
+                    alert(
+                        documentName +
+                        " was added to this page for " +
+                        client +
+                        ". Frontend demo only: the selected file was not uploaded, stored, or analyzed."
+                    );
+
+
+                    document
+                        .getElementById(
+                            "uploadDocumentForm"
+                        )
+                        .reset();
+
+
+                    closeUploadModal();
+
+                }
+            );
+
+
+
+        /* =========================================
+           FILTER MENU
+        ========================================= */
+
+        function toggleDocumentFilter() {
+
+            const menu =
+                document.getElementById(
+                    "documentFilterMenu"
+                );
+
+
+            if (menu.style.display === "block") {
+
+                menu.style.display = "none";
+
+            } else {
+
+                menu.style.display = "block";
+
+            }
+
+        }
+
+
+
+        /* =========================================
+           FILTER DOCUMENTS
+        ========================================= */
+
+        let activeDocumentFilter = "all";
+
+
+        function applyDocumentFilters() {
+
+            const searchValue = document.getElementById("documentSearch").value.toLowerCase();
+            const rows = document.querySelectorAll(".document-item");
+
+            rows.forEach(function(row) {
+                const matchesFilter =
+                    activeDocumentFilter === "all" ||
+                    row.dataset.status === activeDocumentFilter;
+                const matchesSearch =
+                    row.dataset.search.toLowerCase().includes(searchValue);
+                row.style.display = matchesFilter && matchesSearch ? "grid" : "none";
+            });
+
+            checkEmptyDocuments();
+
+        }
+
+
+        function filterDocuments(status) {
+
+            activeDocumentFilter = status;
+            applyDocumentFilters();
+            document.getElementById("documentFilterMenu").style.display = "none";
+
+        }
+
+
+
+        /* =========================================
+           SEARCH DOCUMENTS
+        ========================================= */
+
+        function searchDocuments() {
+
+            applyDocumentFilters();
+
+        }
+
+
+
+        /* =========================================
+           EMPTY RESULT CHECK
+        ========================================= */
+
+        function checkEmptyDocuments() {
+
+            const rows =
+                document.querySelectorAll(
+                    ".document-item"
+                );
+
+            let visibleCount = 0;
+
+
+            rows.forEach(function(row) {
+
+                if (
+                    row.style.display !== "none"
+                ) {
+
+                    visibleCount++;
+
+                }
+
+            });
+
+
+            document.getElementById(
+                "noDocuments"
+            ).style.display =
+                visibleCount === 0
+                    ? "block"
+                    : "none";
+
+        }
+
+
+
+        /* =========================================
+           CLOSE MODALS OUTSIDE CLICK
+        ========================================= */
+
+        window.onclick = function(event) {
+
+            const detailsModal =
+                document.getElementById(
+                    "documentDetailsModal"
+                );
+
+            const uploadModal =
+                document.getElementById(
+                    "uploadDocumentModal"
+                );
+
+            const filterMenu =
+                document.getElementById(
+                    "documentFilterMenu"
+                );
+
+            const filterContainer =
+                document.querySelector(
+                    ".document-filter"
+                );
+
+
+            if (event.target === detailsModal) {
+
+                closeDocumentDetails();
+
+            }
+
+
+            if (event.target === uploadModal) {
+
+                closeUploadModal();
+
+            }
+
+
+            if (
+                filterMenu &&
+                !filterContainer.contains(event.target)
+            ) {
+
+                filterMenu.style.display = "none";
+
+            }
+
+        };
+
+// Open upload modal automatically when requested from Dashboard
+const urlParams = new URLSearchParams(window.location.search);
+
+if (urlParams.get("open") === "upload") {
+    openUploadModal();
+}
+    </script>
+
+
+    <script src="js/api.js"></script>
+    <script src="js/backend-integration.js"></script>
+</body>
+</html>

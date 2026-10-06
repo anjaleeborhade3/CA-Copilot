@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CA-Copilot | Reconciliation</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+
+        /* =========================================
+           RECONCILIATION PAGE
+        ========================================= */
+
+        .reconciliation-panel {
+            margin-top: 25px;
+        }
+
+        .reconciliation-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .reconciliation-search {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .reconciliation-search input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 11px 14px;
+            background: #132942;
+            border: 1px solid #263d57;
+            border-radius: 7px;
+            color: #ffffff;
+            outline: none;
+            font-size: 12px;
+        }
+
+        .reconciliation-search input::placeholder {
+            color: #66788d;
+        }
+
+        .reconciliation-search input:focus {
+            border-color: #4f7ea8;
+        }
+
+
+        /* =========================================
+           FILTER
+        ========================================= */
+
+        .reconciliation-filter {
+            position: relative;
+        }
+
+        .reconciliation-filter-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 42px;
+            width: 170px;
+            background: #0d1b2a;
+            border: 1px solid #263d57;
+            border-radius: 8px;
+            padding: 6px;
+            z-index: 1000;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+        }
+
+        .reconciliation-filter-menu button {
+            width: 100%;
+            padding: 9px 10px;
+            background: transparent;
+            border: none;
+            border-radius: 5px;
+            color: #9aaabd;
+            text-align: left;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .reconciliation-filter-menu button:hover {
+            background: #132942;
+            color: #ffffff;
+        }
+
+
+        /* =========================================
+           TABLE
+        ========================================= */
+
+        .reconciliation-table {
+            width: 100%;
+        }
+
+        .reconciliation-row {
+            display: grid;
+            grid-template-columns:
+                1.2fr
+                1.5fr
+                1fr
+                1fr
+                1fr
+                1fr
+                1.4fr;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 10px;
+            border-bottom: 1px solid #1d3147;
+            color: #9aaabd;
+            font-size: 11px;
+        }
+
+        .reconciliation-row:last-child {
+            border-bottom: none;
+        }
+
+        .reconciliation-row:hover {
+            background: rgba(19,41,66,0.35);
+        }
+
+        .reconciliation-header {
+            color: #66788d;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            font-weight: 600;
+        }
+
+
+        /* =========================================
+           TRANSACTION ID
+        ========================================= */
+
+        .transaction-id {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .transaction-client {
+            color: #ffffff;
+        }
+
+        .amount {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .difference {
+            color: #ff7777;
+            font-weight: 600;
+        }
+
+
+        /* =========================================
+           STATUS
+        ========================================= */
+
+        .reconciliation-status {
+            display: inline-flex;
+            width: fit-content;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .reconciliation-status.matched {
+            background: rgba(46,160,67,0.15);
+            color: #67d47a;
+        }
+
+        .reconciliation-status.unmatched {
+            background: rgba(230,170,40,0.15);
+            color: #e9bd55;
+        }
+
+        .reconciliation-status.exception {
+            background: rgba(220,60,60,0.15);
+            color: #ff7777;
+        }
+
+
+        /* =========================================
+           ACTIONS
+        ========================================= */
+
+        .reconciliation-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .reconciliation-action {
+            background: transparent;
+            border: 1px solid #263d57;
+            color: #9aaabd;
+            padding: 6px 8px;
+            border-radius: 5px;
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+        .reconciliation-action:hover {
+            background: #132942;
+            color: #ffffff;
+        }
+
+        .reconcile-btn:hover {
+            color: #67d47a;
+            border-color: #3d7c4b;
+        }
+
+
+        /* =========================================
+           EMPTY RESULT
+        ========================================= */
+
+        .no-transactions {
+            display: none;
+            text-align: center;
+            padding: 35px;
+            color: #66788d;
+            font-size: 12px;
+        }
+
+
+        /* =========================================
+           MODAL
+        ========================================= */
+
+        .reconciliation-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.70);
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .reconciliation-modal-content {
+            width: 450px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: #0d1b2a;
+            border: 1px solid #263d57;
+            border-radius: 14px;
+            padding: 28px;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .reconciliation-modal-content h2 {
+            color: #ffffff;
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+
+        .reconciliation-subtitle {
+            color: #66788d;
+            font-size: 12px;
+            margin-bottom: 22px;
+        }
+
+        .reconciliation-close {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            background: transparent;
+            border: none;
+            color: #9aaabd;
+            font-size: 25px;
+            cursor: pointer;
+        }
+
+        .reconciliation-close:hover {
+            color: #ffffff;
+        }
+
+
+        /* =========================================
+           DETAILS
+        ========================================= */
+
+        .reconciliation-details {
+            display: grid;
+            gap: 13px;
+        }
+
+        .reconciliation-detail-box {
+            background: #132942;
+            border-radius: 8px;
+            padding: 13px 15px;
+        }
+
+        .reconciliation-detail-box span {
+            display: block;
+            color: #66788d;
+            font-size: 10px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .reconciliation-detail-box strong {
+            color: #ffffff;
+            font-size: 13px;
+        }
+
+
+        /* =========================================
+           UPLOAD FORM
+        ========================================= */
+
+        .reconciliation-form-group {
+            margin-bottom: 16px;
+        }
+
+        .reconciliation-form-group label {
+            display: block;
+            color: #9aaabd;
+            font-size: 11px;
+            margin-bottom: 7px;
+        }
+
+        .reconciliation-form-group input,
+        .reconciliation-form-group select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 11px 12px;
+            background: #132942;
+            border: 1px solid #263d57;
+            border-radius: 7px;
+            color: #ffffff;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .reconciliation-form-group input:focus,
+        .reconciliation-form-group select:focus {
+            border-color: #4f7ea8;
+        }
+
+        .reconciliation-form-group input::placeholder {
+            color: #66788d;
+        }
+
+        .upload-statement-submit {
+            width: 100%;
+            margin-top: 5px;
+        }
+
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 1100px) {
+
+            .reconciliation-row {
+                grid-template-columns:
+                    1.2fr
+                    1.5fr
+                    1fr
+                    1fr
+                    1.2fr;
+            }
+
+            .reconciliation-header span:nth-child(3),
+            .reconciliation-header span:nth-child(4),
+
+            .reconciliation-row > span:nth-child(3),
+            .reconciliation-row > span:nth-child(4) {
+                display: none;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body class="dashboard-page">
+
+
+    <!-- =========================================
+         SIDEBAR
+    ========================================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <span>CA</span>-Copilot
+        </div>
+
+
+        <div class="sidebar-menu">
+
+            <a href="dashboard.html">
+                <span>▦</span>
+                Dashboard
+            </a>
+
+            <a href="clients.html">
+                <span>👥</span>
+                Clients
+            </a>
+
+            <a href="documents.html">
+                <span>📄</span>
+                Documents
+            </a>
+
+            <a href="reconciliation.html" class="active">
+                <span>🔄</span>
+                Reconciliation
+            </a>
+
+            <a href="risk.html">
+                <span>⚠</span>
+                Risk & Anomalies
+            </a>
+
+            <a href="ask-client.html">
+                <span>💬</span>
+                Ask Client File
+            </a>
+
+            <a href="reports.html">
+                <span>📊</span>
+                Reports
+            </a>
+
+        </div>
+
+
+        <div class="sidebar-bottom">
+
+            <a href="settings.html">
+                ⚙ Settings
+            </a>
+
+            <a href="index.html">
+                ← Back to Home
+            </a>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =========================================
+         MAIN
+    ========================================= -->
+
+    <main class="dashboard-main">
+
+
+        <!-- TOPBAR -->
+
+        <div class="dashboard-topbar">
+
+            <div>
+
+                <p class="section-label">
+                    FINANCIAL RECONCILIATION
+                </p>
+
+                <h1>
+                    Reconciliation
+                </h1>
+
+                <p class="dashboard-subtitle">
+                    Compare bank transactions with accounting records and identify discrepancies.
+                </p>
+
+            </div>
+
+
+            <button
+                class="dashboard-btn"
+                onclick="openStatementModal()">
+
+                + Upload Statement
+
+            </button>
+
+        </div>
+
+
+
+        <!-- =========================================
+             SUMMARY
+        ========================================= -->
+
+        <section class="dashboard-stats">
+
+
+            <div class="dashboard-stat">
+
+                <div class="stat-icon">
+                    🔄
+                </div>
+
+                <p>
+                    Total Transactions
+                </p>
+
+                <h2 id="totalTransactions">
+                    248
+                </h2>
+
+                <span>
+                    Transactions checked
+                </span>
+
+            </div>
+
+
+            <div class="dashboard-stat">
+
+                <div class="stat-icon">
+                    ✅
+                </div>
+
+                <p>
+                    Matched
+                </p>
+
+                <h2 id="matchedTransactions">
+                    219
+                </h2>
+
+                <span>
+                    Successfully matched
+                </span>
+
+            </div>
+
+
+            <div class="dashboard-stat warning-stat">
+
+                <div class="stat-icon">
+                    ⚠️
+                </div>
+
+                <p>
+                    Unmatched
+                </p>
+
+                <h2 id="unmatchedTransactions">
+                    21
+                </h2>
+
+                <span>
+                    Need verification
+                </span>
+
+            </div>
+
+
+            <div class="dashboard-stat danger-stat">
+
+                <div class="stat-icon">
+                    🚨
+                </div>
+
+                <p>
+                    Exceptions
+                </p>
+
+                <h2 id="exceptionTransactions">
+                    8
+                </h2>
+
+                <span>
+                    Require attention
+                </span>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =========================================
+             RECONCILIATION PANEL
+        ========================================= -->
+
+        <section class="dashboard-panel reconciliation-panel">
+
+
+            <div class="panel-heading">
+
+                <div>
+
+                    <p class="section-label">
+                        TRANSACTION MATCHING
+                    </p>
+
+                    <h2>
+                        Reconciliation Records
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- SEARCH + FILTER -->
+
+            <div class="reconciliation-toolbar">
+
+
+                <div class="reconciliation-search">
+
+                    <input
+                        type="text"
+                        id="reconciliationSearch"
+                        aria-label="Search reconciliation transactions"
+                        placeholder="🔍 Search transaction or client..."
+                        oninput="searchTransactions()">
+
+                </div>
+
+
+                <div class="reconciliation-filter">
+
+                    <button
+                        class="view-btn"
+                        onclick="toggleReconciliationFilter()">
+
+                        Filter ▾
+
+                    </button>
+
+
+                    <div
+                        id="reconciliationFilterMenu"
+                        class="reconciliation-filter-menu">
+
+                        <button onclick="filterTransactions('all')">
+                            🔄 All Transactions
+                        </button>
+
+                        <button onclick="filterTransactions('matched')">
+                            ✅ Matched
+                        </button>
+
+                        <button onclick="filterTransactions('unmatched')">
+                            🟡 Unmatched
+                        </button>
+
+                        <button onclick="filterTransactions('exception')">
+                            🔴 Exceptions
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =========================================
+                 TABLE
+            ========================================= -->
+
+            <div class="reconciliation-table">
+
+
+                <!-- HEADER -->
+
+                <div class="reconciliation-row reconciliation-header">
+
+                    <span>
+                        Transaction ID
+                    </span>
+
+                    <span>
+                        Client
+                    </span>
+
+                    <span>
+                        Bank Amount
+                    </span>
+
+                    <span>
+                        Books Amount
+                    </span>
+
+                    <span>
+                        Difference
+                    </span>
+
+                    <span>
+                        Status
+                    </span>
+
+                    <span>
+                        Action
+                    </span>
+
+                </div>
+
+
+
+                <!-- TRANSACTION 1 -->
+
+                <div
+                    class="reconciliation-row transaction-item"
+                    data-status="matched"
+                    data-search="TXN-1001 ABC Enterprises">
+
+                    <span class="transaction-id">
+                        TXN-1001
+                    </span>
+
+                    <span class="transaction-client">
+                        ABC Enterprises
+                    </span>
+
+                    <span class="amount">
+                        ₹85,000
+                    </span>
+
+                    <span class="amount">
+                        ₹85,000
+                    </span>
+
+                    <span>
+                        ₹0
+                    </span>
+
+                    <span class="reconciliation-status matched">
+                        Matched
+                    </span>
+
+                    <div class="reconciliation-actions">
+
+                        <button
+                            class="reconciliation-action"
+                            onclick="viewTransaction(
+                                'TXN-1001',
+                                'ABC Enterprises',
+                                '₹85,000',
+                                '₹85,000',
+                                '₹0',
+                                'Matched'
+                            )">
+
+                            View
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- TRANSACTION 2 -->
+
+                <div
+                    class="reconciliation-row transaction-item"
+                    data-status="unmatched"
+                    data-search="TXN-1002 Shree Traders">
+
+                    <span class="transaction-id">
+                        TXN-1002
+                    </span>
+
+                    <span class="transaction-client">
+                        Shree Traders
+                    </span>
+
+                    <span class="amount">
+                        ₹52,500
+                    </span>
+
+                    <span class="amount">
+                        ₹50,000
+                    </span>
+
+                    <span class="difference">
+                        ₹2,500
+                    </span>
+
+                    <span class="reconciliation-status unmatched">
+                        Unmatched
+                    </span>
+
+                    <div class="reconciliation-actions">
+
+                        <button
+                            class="reconciliation-action"
+                            onclick="viewTransaction(
+                                'TXN-1002',
+                                'Shree Traders',
+                                '₹52,500',
+                                '₹50,000',
+                                '₹2,500',
+                                'Unmatched'
+                            )">
+
+                            View
+
+                        </button>
+
+                        <button
+                            class="reconciliation-action reconcile-btn"
+                            onclick="reconcileTransaction('TXN-1002')">
+
+                            Reconcile
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- TRANSACTION 3 -->
+
+                <div
+                    class="reconciliation-row transaction-item"
+                    data-status="exception"
+                    data-search="TXN-1003 Patil Industries">
+
+                    <span class="transaction-id">
+                        TXN-1003
+                    </span>
+
+                    <span class="transaction-client">
+                        Patil Industries
+                    </span>
+
+                    <span class="amount">
+                        ₹1,25,000
+                    </span>
+
+                    <span class="amount">
+                        ₹1,18,000
+                    </span>
+
+                    <span class="difference">
+                        ₹7,000
+                    </span>
+
+                    <span class="reconciliation-status exception">
+                        Exception
+                    </span>
+
+                    <div class="reconciliation-actions">
+
+                        <button
+                            class="reconciliation-action"
+                            onclick="viewTransaction(
+                                'TXN-1003',
+                                'Patil Industries',
+                                '₹1,25,000',
+                                '₹1,18,000',
+                                '₹7,000',
+                                'Exception'
+                            )">
+
+                            View
+
+                        </button>
+
+                        <button
+                            class="reconciliation-action reconcile-btn"
+                            onclick="reconcileTransaction('TXN-1003')">
+
+                            Reconcile
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- TRANSACTION 4 -->
+
+                <div
+                    class="reconciliation-row transaction-item"
+                    data-status="matched"
+                    data-search="TXN-1004 Global Services">
+
+                    <span class="transaction-id">
+                        TXN-1004
+                    </span>
+
+                    <span class="transaction-client">
+                        Global Services
+                    </span>
+
+                    <span class="amount">
+                        ₹96,000
+                    </span>
+
+                    <span class="amount">
+                        ₹96,000
+                    </span>
+
+                    <span>
+                        ₹0
+                    </span>
+
+                    <span class="reconciliation-status matched">
+                        Matched
+                    </span>
+
+                    <div class="reconciliation-actions">
+
+                        <button
+                            class="reconciliation-action"
+                            onclick="viewTransaction(
+                                'TXN-1004',
+                                'Global Services',
+                                '₹96,000',
+                                '₹96,000',
+                                '₹0',
+                                'Matched'
+                            )">
+
+                            View
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- TRANSACTION 5 -->
+
+                <div
+                    class="reconciliation-row transaction-item"
+                    data-status="unmatched"
+                    data-search="TXN-1005 ABC Enterprises">
+
+                    <span class="transaction-id">
+                        TXN-1005
+                    </span>
+
+                    <span class="transaction-client">
+                        ABC Enterprises
+                    </span>
+
+                    <span class="amount">
+                        ₹43,750
+                    </span>
+
+                    <span class="amount">
+                        ₹45,000
+                    </span>
+
+                    <span class="difference">
+                        -₹1,250
+                    </span>
+
+                    <span class="reconciliation-status unmatched">
+                        Unmatched
+                    </span>
+
+                    <div class="reconciliation-actions">
+
+                        <button
+                            class="reconciliation-action"
+                            onclick="viewTransaction(
+                                'TXN-1005',
+                                'ABC Enterprises',
+                                '₹43,750',
+                                '₹45,000',
+                                '-₹1,250',
+                                'Unmatched'
+                            )">
+
+                            View
+
+                        </button>
+
+                        <button
+                            class="reconciliation-action reconcile-btn"
+                            onclick="reconcileTransaction('TXN-1005')">
+
+                            Reconcile
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <div
+                id="noTransactions"
+                class="no-transactions">
+
+                No transactions found.
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- FOOTER -->
+
+        <footer class="dashboard-footer">
+
+            <p>
+                © 2026 CA-Copilot | Intelligent Financial Review System
+            </p>
+
+        </footer>
+
+
+    </main>
+
+
+
+    <!-- =========================================
+         TRANSACTION DETAILS MODAL
+    ========================================= -->
+
+    <div
+        id="transactionModal"
+        class="reconciliation-modal">
+
+
+        <div class="reconciliation-modal-content">
+
+
+            <button
+                class="reconciliation-close"
+                type="button"
+                aria-label="Close transaction details"
+                onclick="closeTransaction()">
+
+                ×
+
+            </button>
+
+
+            <h2 id="transactionTitle">
+                Transaction
+            </h2>
+
+
+            <p class="reconciliation-subtitle">
+                Reconciliation Details
+            </p>
+
+
+            <div class="reconciliation-details">
+
+
+                <div class="reconciliation-detail-box">
+
+                    <span>
+                        Client
+                    </span>
+
+                    <strong id="transactionClient">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="reconciliation-detail-box">
+
+                    <span>
+                        Bank Amount
+                    </span>
+
+                    <strong id="transactionBank">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="reconciliation-detail-box">
+
+                    <span>
+                        Books Amount
+                    </span>
+
+                    <strong id="transactionBooks">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="reconciliation-detail-box">
+
+                    <span>
+                        Difference
+                    </span>
+
+                    <strong id="transactionDifference">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="reconciliation-detail-box">
+
+                    <span>
+                        Status
+                    </span>
+
+                    <strong id="transactionStatus">
+                        -
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================
+         UPLOAD STATEMENT MODAL
+    ========================================= -->
+
+    <div
+        id="statementModal"
+        class="reconciliation-modal">
+
+
+        <div class="reconciliation-modal-content">
+
+
+            <button
+                class="reconciliation-close"
+                type="button"
+                aria-label="Close statement upload dialog"
+                onclick="closeStatementModal()">
+
+                ×
+
+            </button>
+
+
+            <h2>
+                Upload Bank Statement
+            </h2>
+
+
+            <p class="reconciliation-subtitle">
+                The statement file is stored locally; transaction rows are not automatically parsed.
+            </p>
+
+
+            <form id="statementForm">
+
+
+                <div class="reconciliation-form-group">
+
+                    <label for="statementClient">
+                        Client
+                    </label>
+
+                    <select id="statementClient" required>
+
+                        <option value="">
+                            Select Client
+                        </option>
+
+                        <option>
+                            ABC Enterprises
+                        </option>
+
+                        <option>
+                            Shree Traders
+                        </option>
+
+                        <option>
+                            Patil Industries
+                        </option>
+
+                        <option>
+                            Global Services
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="reconciliation-form-group">
+
+                    <label for="statementBank">
+                        Bank
+                    </label>
+
+                    <select id="statementBank" required>
+
+                        <option value="">
+                            Select Bank
+                        </option>
+
+                        <option>
+                            State Bank of India
+                        </option>
+
+                        <option>
+                            HDFC Bank
+                        </option>
+
+                        <option>
+                            ICICI Bank
+                        </option>
+
+                        <option>
+                            Axis Bank
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="reconciliation-form-group">
+
+                    <label for="statementYear">
+                        Financial Year
+                    </label>
+
+                    <select id="statementYear">
+
+                        <option>
+                            FY 2025-26
+                        </option>
+
+                        <option>
+                            FY 2026-27
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="reconciliation-form-group">
+
+                    <label for="statementFile">
+                        Statement File
+                    </label>
+
+                    <input
+                        type="file"
+                        id="statementFile"
+                        accept=".pdf,.csv,.xlsx,.xls"
+                        required>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="dashboard-btn upload-statement-submit">
+
+                    Upload Statement
+
+                </button>
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================
+         JAVASCRIPT
+    ========================================= -->
+
+    <script>
+
+
+        /* =========================================
+           VIEW TRANSACTION
+        ========================================= */
+
+        function viewTransaction(
+            id,
+            client,
+            bank,
+            books,
+            difference,
+            status
+        ) {
+
+            document.getElementById(
+                "transactionTitle"
+            ).textContent = id;
+
+            document.getElementById(
+                "transactionClient"
+            ).textContent = client;
+
+            document.getElementById(
+                "transactionBank"
+            ).textContent = bank;
+
+            document.getElementById(
+                "transactionBooks"
+            ).textContent = books;
+
+            document.getElementById(
+                "transactionDifference"
+            ).textContent = difference;
+
+            document.getElementById(
+                "transactionStatus"
+            ).textContent = status;
+
+            document.getElementById(
+                "transactionModal"
+            ).style.display = "flex";
+
+        }
+
+
+        function closeTransaction() {
+
+            document.getElementById(
+                "transactionModal"
+            ).style.display = "none";
+
+        }
+
+
+
+        /* =========================================
+           RECONCILE
+        ========================================= */
+
+        function reconcileTransaction(id) {
+
+            const row = Array.from(
+                document.querySelectorAll(".transaction-item")
+            ).find(function(transaction) {
+                return transaction.querySelector(".transaction-id").textContent.trim() === id;
+            });
+
+            if (!row) {
+                alert("Transaction " + id + " could not be found.");
+                return;
+            }
+
+            row.dataset.status = "matched";
+            const status = row.querySelector(".reconciliation-status");
+            status.textContent = "Matched";
+            status.className = "reconciliation-status matched";
+
+            const reconcileButton = row.querySelector(".reconcile-btn");
+            if (reconcileButton) {
+                reconcileButton.remove();
+            }
+
+            applyTransactionFilters();
+            alert(id + " is now marked as Matched in this page. Frontend demo state is not saved after reload.");
+
+        }
+
+
+
+        /* =========================================
+           STATEMENT MODAL
+        ========================================= */
+
+        function openStatementModal() {
+
+            document.getElementById(
+                "statementModal"
+            ).style.display = "flex";
+
+        }
+
+
+        function closeStatementModal() {
+
+            document.getElementById(
+                "statementModal"
+            ).style.display = "none";
+
+        }
+
+
+
+        /* =========================================
+           STATEMENT FORM
+        ========================================= */
+
+        document
+            .getElementById("statementForm")
+            .addEventListener(
+                "submit",
+                function(event) {
+
+                    event.preventDefault();
+
+
+                    const client =
+                        document.getElementById(
+                            "statementClient"
+                        ).value;
+
+                    const bank =
+                        document.getElementById(
+                            "statementBank"
+                        ).value;
+
+                    const fileName =
+                        document.getElementById(
+                            "statementFile"
+                        ).files[0].name;
+
+                    alert(
+                        "Frontend demo only: " +
+                        fileName +
+                        " was selected for " +
+                        client +
+                        " at " +
+                        bank +
+                        ". The file was not uploaded or processed, and no reconciliation was started."
+                    );
+
+
+                    document
+                        .getElementById("statementForm")
+                        .reset();
+
+
+                    closeStatementModal();
+
+                }
+            );
+
+
+
+        /* =========================================
+           FILTER MENU
+        ========================================= */
+
+        function toggleReconciliationFilter() {
+
+            const menu =
+                document.getElementById(
+                    "reconciliationFilterMenu"
+                );
+
+
+            if (menu.style.display === "block") {
+
+                menu.style.display = "none";
+
+            } else {
+
+                menu.style.display = "block";
+
+            }
+
+        }
+
+
+
+        /* =========================================
+           FILTER TRANSACTIONS
+        ========================================= */
+
+        let activeTransactionFilter = "all";
+
+
+        function applyTransactionFilters() {
+
+            const searchValue = document.getElementById("reconciliationSearch").value.toLowerCase();
+            const rows = document.querySelectorAll(".transaction-item");
+
+            rows.forEach(function(row) {
+                const matchesFilter =
+                    activeTransactionFilter === "all" ||
+                    row.dataset.status === activeTransactionFilter;
+                const matchesSearch =
+                    row.dataset.search.toLowerCase().includes(searchValue);
+                row.style.display = matchesFilter && matchesSearch ? "grid" : "none";
+            });
+
+            checkEmptyTransactions();
+
+        }
+
+
+        function filterTransactions(status) {
+
+            activeTransactionFilter = status;
+            applyTransactionFilters();
+            document.getElementById("reconciliationFilterMenu").style.display = "none";
+
+        }
+
+
+
+        /* =========================================
+           SEARCH
+        ========================================= */
+
+        function searchTransactions() {
+
+            applyTransactionFilters();
+
+        }
+
+
+
+        /* =========================================
+           EMPTY RESULT
+        ========================================= */
+
+        function checkEmptyTransactions() {
+
+            const rows =
+                document.querySelectorAll(
+                    ".transaction-item"
+                );
+
+            let visibleCount = 0;
+
+
+            rows.forEach(function(row) {
+
+                if (
+                    row.style.display !== "none"
+                ) {
+
+                    visibleCount++;
+
+                }
+
+            });
+
+
+            document.getElementById(
+                "noTransactions"
+            ).style.display =
+                visibleCount === 0
+                    ? "block"
+                    : "none";
+
+        }
+
+
+
+        /* =========================================
+           OUTSIDE CLICK
+        ========================================= */
+
+        window.onclick = function(event) {
+
+            const transactionModal =
+                document.getElementById(
+                    "transactionModal"
+                );
+
+            const statementModal =
+                document.getElementById(
+                    "statementModal"
+                );
+
+            const filterMenu =
+                document.getElementById(
+                    "reconciliationFilterMenu"
+                );
+
+            const filterContainer =
+                document.querySelector(
+                    ".reconciliation-filter"
+                );
+
+
+            if (event.target === transactionModal) {
+
+                closeTransaction();
+
+            }
+
+
+            if (event.target === statementModal) {
+
+                closeStatementModal();
+
+            }
+
+
+            if (
+                filterMenu &&
+                !filterContainer.contains(event.target)
+            ) {
+
+                filterMenu.style.display = "none";
+
+            }
+
+        };
+
+// Open the requested reconciliation action when linked from Dashboard.
+const urlParams = new URLSearchParams(window.location.search);
+
+if (urlParams.get("open") === "statement") {
+    openStatementModal();
+}
+
+const transactionId = urlParams.get("transaction");
+
+if (transactionId) {
+    const transactionRow = Array.from(
+        document.querySelectorAll(".transaction-item")
+    ).find(function(row) {
+        return row.querySelector(".transaction-id").textContent.trim() === transactionId;
+    });
+
+    if (transactionRow) {
+        viewTransaction(
+            transactionId,
+            transactionRow.querySelector(".transaction-client").textContent.trim(),
+            transactionRow.children[2].textContent.trim(),
+            transactionRow.children[3].textContent.trim(),
+            transactionRow.children[4].textContent.trim(),
+            transactionRow.querySelector(".reconciliation-status").textContent.trim()
+        );
+    }
+}
+    </script>
+
+
+    <script src="js/api.js"></script>
+    <script src="js/backend-integration.js"></script>
+</body>
+</html>
