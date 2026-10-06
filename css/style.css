@@ -447,7 +447,7 @@ footer .copyright {
     box-shadow: 0 0 25px rgba(77, 163, 255, 0.25);
 }
 /* =========================================
-   CA-COPILOT DASHBOARD
+   FINPILOT DASHBOARD
    ========================================= */
 
 .dashboard-page {
@@ -1136,4 +1136,201 @@ footer .copyright {
 .add-client-submit {
     width: 100%;
     margin-top: 8px;
+}
+/* FinPilot Logo */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+/* FinPilot Logo */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.logo-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: #0f2747;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 20px;
+    font-weight: bold;
+    color: #20c997;
+}
+
+.logo-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.logo-text span {
+    color: #20c997;
+}
+.logo-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #0f2747;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: #20c997;
+    box-shadow: 0 4px 12px rgba(15, 39, 71, 0.25);
+}
+
+.logo-text {
+    font-size: 22px;
+    font-weight: 700;
+    color: #0f2747;
+}
+
+.logo-text span {
+    color: #20c997;
+}
+/* =========================
+   FinPilot Brand Logo
+========================= */
+
+.navbar .logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+}
+
+.navbar .finpilot-logo-icon {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    display: block;
+    overflow: visible;
+}
+
+.navbar .finpilot-logo-icon circle {
+    fill: #0f2747;
+    stroke: #20c997;
+    stroke-width: 2;
+}
+
+.navbar .finpilot-logo-icon path:nth-of-type(1) {
+    fill: #20c997;
+}
+
+.navbar .finpilot-logo-icon path:nth-of-type(2) {
+    fill: none;
+    stroke: white;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.navbar .finpilot-wordmark {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    font-size: 23px;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.navbar .finpilot-wordmark .fin {
+    color: #20c997;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar .finpilot-wordmark .pilot {
+    color: #0f2747;
+    margin: 0;
+    padding: 0;
+}
+/* =========================
+   FinPilot Final Logo Colors
+========================= */
+
+.navbar .finpilot-wordmark .fin {
+    color: #16A085 !important;
+}
+
+.navbar .finpilot-wordmark .pilot {
+    color: #163A5F !important;
+}
+
+.navbar .finpilot-logo-icon circle {
+    fill: #163A5F;
+    stroke: #16A085;
+    stroke-width: 2;
+}
+
+.navbar .finpilot-logo-icon path:nth-of-type(1) {
+    fill: #16A085;
+}
+
+.navbar .finpilot-logo-icon path:nth-of-type(2) {
+    fill: #FFFFFF;
+}
+
+.sidebar .logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+}
+
+.sidebar .finpilot-logo-icon {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+}
+
+.sidebar .finpilot-logo-icon circle {
+    fill: #163A5F;
+    stroke: #16A085;
+    stroke-width: 2;
+}
+
+.sidebar .finpilot-logo-icon path:nth-of-type(1) {
+    fill: #16A085;
+}
+
+.sidebar .finpilot-logo-icon path:nth-of-type(2) {
+    fill: #FFFFFF;
+}
+
+.sidebar .finpilot-wordmark {
+    display: inline-flex;
+    align-items: center;
+    font-size: 23px;
+    line-height: 1;
+    font-weight: 700;
+}
+
+.sidebar .finpilot-wordmark .fin {
+    color: #16A085 !important;
+}
+
+.sidebar .finpilot-wordmark .pilot {
+    color: #163A5F !important;
 }

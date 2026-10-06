@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings - CA Copilot</title>
+    <title>Settings - FinPilot</title>
 
     <link rel="stylesheet" href="css/style.css">
 
@@ -246,7 +246,16 @@
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="logo">
-            <h2>CA Copilot</h2>
+            <svg class="finpilot-logo-icon" viewBox="0 0 48 48" aria-label="FinPilot logo">
+                <circle cx="24" cy="24" r="21"></circle>
+                <path d="M24 8 L27 21 L40 24 L27 27 L24 40 L21 27 L8 24 L21 21 Z"></path>
+                <path d="M15 30 L20 25 L24 28 L33 17"></path>
+            </svg>
+
+            <div class="finpilot-wordmark">
+                <span class="fin">Fin</span><span class="pilot">Pilot</span>
+            </div>
+
             <span>Audit & Finance Assistant</span>
         </div>
 
@@ -318,7 +327,7 @@
 
                 <div class="form-group">
                     <label for="firmName">Firm Name</label>
-                    <input type="text" id="firmName" value="CA Copilot Advisory">
+                    <input type="text" id="firmName" value="FinPilot Advisory">
                 </div>
 
                 <div class="form-group">
@@ -453,7 +462,7 @@
             fullName: "CA Admin",
             email: "admin@cacopilot.com",
             role: "Chartered Accountant",
-            firmName: "CA Copilot Advisory",
+            firmName: "FinPilot Advisory",
             officeEmail: "contact@cacopilot.com",
             officeLocation: "Pune, Maharashtra",
             emailNotifications: true,
@@ -510,7 +519,7 @@
                     applySettings({ ...defaultSettings, ...parsedSettings });
                 }
             } catch (error) {
-                console.warn("Saved CA-Copilot settings could not be read.", error);
+                console.warn("Saved FinPilot settings could not be read.", error);
             }
         }
 

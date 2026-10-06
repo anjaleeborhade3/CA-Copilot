@@ -163,7 +163,7 @@
                 form.reset();
                 window.closeAddClient();
                 await load();
-                alert(client.name + " was saved to the local CA-Copilot database as " + client.id + ".");
+                alert(client.name + " was saved to the local FinPilot database as " + client.id + ".");
             } catch (error) {
                 actionError(error);
             }
@@ -662,7 +662,7 @@
                 const settings = await api.send("/settings", "PUT", readForm());
                 window.applySettings(settings);
                 localStorage.setItem("caCopilotSettings", JSON.stringify(settings));
-                alert("Settings saved to the local CA-Copilot database.");
+                alert("Settings saved to the local FinPilot database.");
             } catch (error) {
                 actionError(error);
             }

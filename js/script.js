@@ -45,4 +45,4 @@ featureCards.forEach(card => {
 
 
 // Console confirmation
-console.log("CA-Copilot loaded successfully!");
+console.log("FinPilot loaded successfully!");

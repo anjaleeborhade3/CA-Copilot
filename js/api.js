@@ -8,7 +8,7 @@
         try {
             response = await fetch(baseUrl + path, options);
         } catch (error) {
-            throw new Error("Cannot reach the local CA-Copilot backend at http://localhost:8001. Start the backend and try again.");
+            throw new Error("Cannot reach the local FinPilot backend at http://localhost:8001. Start the backend and try again.");
         }
 
         if (!response.ok) {

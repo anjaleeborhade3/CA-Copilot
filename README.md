@@ -1,6 +1,6 @@
-# CA-Copilot local frontend and backend
+# FinPilot local frontend and backend
 
-CA-Copilot is a local frontend prototype with a FastAPI service and SQLite persistence. It does not connect to a hosted service, external API, or AI model.
+FinPilot is a local frontend prototype with a FastAPI service and SQLite persistence. It does not connect to a hosted service, external API, or AI model.
 
 ## Run locally
 

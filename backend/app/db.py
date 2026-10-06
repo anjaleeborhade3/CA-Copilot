@@ -18,7 +18,7 @@ DEFAULT_SETTINGS = {
     "fullName": "CA Admin",
     "email": "admin@cacopilot.com",
     "role": "Chartered Accountant",
-    "firmName": "CA Copilot Advisory",
+    "firmName": "FinPilot Advisory",
     "officeEmail": "contact@cacopilot.com",
     "officeLocation": "Pune, Maharashtra",
     "emailNotifications": True,
